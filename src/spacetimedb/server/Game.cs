@@ -16,7 +16,7 @@ public static partial class Module
     {
         [PrimaryKey, AutoInc]
         public ulong GameToken;
-        public required string Name;
+        public  string? Name;
         public byte MaxPlayers;
         public bool IsPrivate = false;
     }
@@ -25,9 +25,9 @@ public static partial class Module
     public partial class GameSecrets
     {
         [PrimaryKey]
-        public required ulong GameToken;
-        public required Identity Host;
-        public required Timestamp StartTime;
+        public  ulong GameToken;
+        public  Identity Host;
+        public  Timestamp StartTime;
         public byte? CurrentTurnPosition;
         public bool IsActive = true;
         public bool HasStarted = false;
@@ -39,7 +39,7 @@ public static partial class Module
         [PrimaryKey, AutoInc]
         public ulong LobbyToken;
         [SpacetimeDB.Index.BTree]
-        public required ulong GameToken;
+        public  ulong GameToken;
         public bool IsConnected;
         public bool IsReady = false;
     }
@@ -48,11 +48,11 @@ public static partial class Module
     public partial class LobbySecrets
     {
         [PrimaryKey]
-        public required ulong LobbyToken;
+        public  ulong LobbyToken;
         [SpacetimeDB.Index.BTree]
-        public required Identity Player;
+        public  Identity Player;
         [SpacetimeDB.Index.BTree]
-        public required ulong GameToken;
+        public  ulong GameToken;
         public bool isBanned = false;
     }
 
