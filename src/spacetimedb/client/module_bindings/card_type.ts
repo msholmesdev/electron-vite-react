@@ -30,32 +30,43 @@ import {
   Timestamp,
   deepEqual,
 } from "@clockworklabs/spacetimedb-sdk";
+import { Guilds as __Guilds } from "./guilds_type";
+import { Locations as __Locations } from "./locations_type";
 
-export type SendMessage = {
-  text: string,
+export type Card = {
+  identity: Identity,
+  employee: __Guilds | undefined,
+  boss: Identity | undefined,
+  location: __Locations | undefined,
+  isUsed: boolean,
 };
 
 /**
  * A namespace for generated helper functions.
  */
-export namespace SendMessage {
+export namespace Card {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
   */
   export function getTypeScriptAlgebraicType(): AlgebraicType {
     return AlgebraicType.createProductType([
-      new ProductTypeElement("text", AlgebraicType.createStringType()),
+      new ProductTypeElement("identity", AlgebraicType.createIdentityType()),
+      new ProductTypeElement("employee", AlgebraicType.createOptionType(__Guilds.getTypeScriptAlgebraicType())),
+      new ProductTypeElement("boss", AlgebraicType.createOptionType(AlgebraicType.createIdentityType())),
+      new ProductTypeElement("location", AlgebraicType.createOptionType(__Locations.getTypeScriptAlgebraicType())),
+      new ProductTypeElement("isUsed", AlgebraicType.createBoolType()),
     ]);
   }
 
-  export function serialize(writer: BinaryWriter, value: SendMessage): void {
-    SendMessage.getTypeScriptAlgebraicType().serialize(writer, value);
+  export function serialize(writer: BinaryWriter, value: Card): void {
+    Card.getTypeScriptAlgebraicType().serialize(writer, value);
   }
 
-  export function deserialize(reader: BinaryReader): SendMessage {
-    return SendMessage.getTypeScriptAlgebraicType().deserialize(reader);
+  export function deserialize(reader: BinaryReader): Card {
+    return Card.getTypeScriptAlgebraicType().deserialize(reader);
   }
 
 }
+
 

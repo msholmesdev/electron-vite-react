@@ -36,33 +36,78 @@ import { ClientConnected } from "./client_connected_reducer.ts";
 export { ClientConnected };
 import { ClientDisconnected } from "./client_disconnected_reducer.ts";
 export { ClientDisconnected };
-import { SendMessage } from "./send_message_reducer.ts";
-export { SendMessage };
-import { SetName } from "./set_name_reducer.ts";
-export { SetName };
+import { CloseLobby } from "./close_lobby_reducer.ts";
+export { CloseLobby };
+import { JoinLobby } from "./join_lobby_reducer.ts";
+export { JoinLobby };
+import { RemoveSelfFromLobby } from "./remove_self_from_lobby_reducer.ts";
+export { RemoveSelfFromLobby };
+import { StartLobby } from "./start_lobby_reducer.ts";
+export { StartLobby };
 
 // Import and reexport all table handle types
-import { MessageTableHandle } from "./message_table.ts";
-export { MessageTableHandle };
-import { UserTableHandle } from "./user_table.ts";
-export { UserTableHandle };
+import { BossTableHandle } from "./boss_table.ts";
+export { BossTableHandle };
+import { CardTableHandle } from "./card_table.ts";
+export { CardTableHandle };
+import { GameTableHandle } from "./game_table.ts";
+export { GameTableHandle };
+import { GameSecretsTableHandle } from "./game_secrets_table.ts";
+export { GameSecretsTableHandle };
+import { LobbyTableHandle } from "./lobby_table.ts";
+export { LobbyTableHandle };
+import { LobbySecretsTableHandle } from "./lobby_secrets_table.ts";
+export { LobbySecretsTableHandle };
 
 // Import and reexport all types
-import { Message } from "./message_type.ts";
-export { Message };
-import { User } from "./user_type.ts";
-export { User };
+import { Boss } from "./boss_type.ts";
+export { Boss };
+import { Card } from "./card_type.ts";
+export { Card };
+import { Game } from "./game_type.ts";
+export { Game };
+import { GameSecrets } from "./game_secrets_type.ts";
+export { GameSecrets };
+import { Guilds } from "./guilds_type.ts";
+export { Guilds };
+import { Lobby } from "./lobby_type.ts";
+export { Lobby };
+import { LobbySecrets } from "./lobby_secrets_type.ts";
+export { LobbySecrets };
+import { Locations } from "./locations_type.ts";
+export { Locations };
 
 const REMOTE_MODULE = {
   tables: {
-    message: {
-      tableName: "message",
-      rowType: Message.getTypeScriptAlgebraicType(),
-    },
-    user: {
-      tableName: "user",
-      rowType: User.getTypeScriptAlgebraicType(),
+    boss: {
+      tableName: "boss",
+      rowType: Boss.getTypeScriptAlgebraicType(),
       primaryKey: "identity",
+    },
+    card: {
+      tableName: "card",
+      rowType: Card.getTypeScriptAlgebraicType(),
+      primaryKey: "identity",
+    },
+    game: {
+      tableName: "game",
+      rowType: Game.getTypeScriptAlgebraicType(),
+      primaryKey: "gameToken",
+    },
+    game_secrets: {
+      tableName: "game_secrets",
+      rowType: GameSecrets.getTypeScriptAlgebraicType(),
+      primaryKey: "gameToken",
+    },
+    lobby: {
+      tableName: "lobby",
+      rowType: Lobby.getTypeScriptAlgebraicType(),
+      primaryKey: "lobbyToken",
+    },
+    lobby_secrets: {
+      tableName: "lobby_secrets",
+      rowType: LobbySecrets.getTypeScriptAlgebraicType(),
+      primaryKey: "lobbyToken",
     },
   },
   reducers: {
@@ -74,13 +119,21 @@ const REMOTE_MODULE = {
       reducerName: "ClientDisconnected",
       argsType: ClientDisconnected.getTypeScriptAlgebraicType(),
     },
-    SendMessage: {
-      reducerName: "SendMessage",
-      argsType: SendMessage.getTypeScriptAlgebraicType(),
+    CloseLobby: {
+      reducerName: "CloseLobby",
+      argsType: CloseLobby.getTypeScriptAlgebraicType(),
     },
-    SetName: {
-      reducerName: "SetName",
-      argsType: SetName.getTypeScriptAlgebraicType(),
+    JoinLobby: {
+      reducerName: "JoinLobby",
+      argsType: JoinLobby.getTypeScriptAlgebraicType(),
+    },
+    RemoveSelfFromLobby: {
+      reducerName: "RemoveSelfFromLobby",
+      argsType: RemoveSelfFromLobby.getTypeScriptAlgebraicType(),
+    },
+    StartLobby: {
+      reducerName: "StartLobby",
+      argsType: StartLobby.getTypeScriptAlgebraicType(),
     },
   },
   // Constructors which are used by the DbConnectionImpl to
@@ -111,8 +164,10 @@ const REMOTE_MODULE = {
 export type Reducer = never
 | { name: "ClientConnected", args: ClientConnected }
 | { name: "ClientDisconnected", args: ClientDisconnected }
-| { name: "SendMessage", args: SendMessage }
-| { name: "SetName", args: SetName }
+| { name: "CloseLobby", args: CloseLobby }
+| { name: "JoinLobby", args: JoinLobby }
+| { name: "RemoveSelfFromLobby", args: RemoveSelfFromLobby }
+| { name: "StartLobby", args: StartLobby }
 ;
 
 export class RemoteReducers {
@@ -134,49 +189,91 @@ export class RemoteReducers {
     this.connection.offReducer("ClientDisconnected", callback);
   }
 
-  sendMessage(text: string) {
-    const __args = { text };
+  closeLobby(gameToken: bigint) {
+    const __args = { gameToken };
     let __writer = new BinaryWriter(1024);
-    SendMessage.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    CloseLobby.getTypeScriptAlgebraicType().serialize(__writer, __args);
     let __argsBuffer = __writer.getBuffer();
-    this.connection.callReducer("SendMessage", __argsBuffer, this.setCallReducerFlags.sendMessageFlags);
+    this.connection.callReducer("CloseLobby", __argsBuffer, this.setCallReducerFlags.closeLobbyFlags);
   }
 
-  onSendMessage(callback: (ctx: ReducerEventContext, text: string) => void) {
-    this.connection.onReducer("SendMessage", callback);
+  onCloseLobby(callback: (ctx: ReducerEventContext, gameToken: bigint) => void) {
+    this.connection.onReducer("CloseLobby", callback);
   }
 
-  removeOnSendMessage(callback: (ctx: ReducerEventContext, text: string) => void) {
-    this.connection.offReducer("SendMessage", callback);
+  removeOnCloseLobby(callback: (ctx: ReducerEventContext, gameToken: bigint) => void) {
+    this.connection.offReducer("CloseLobby", callback);
   }
 
-  setName(name: string) {
-    const __args = { name };
+  joinLobby(gameToken: bigint) {
+    const __args = { gameToken };
     let __writer = new BinaryWriter(1024);
-    SetName.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    JoinLobby.getTypeScriptAlgebraicType().serialize(__writer, __args);
     let __argsBuffer = __writer.getBuffer();
-    this.connection.callReducer("SetName", __argsBuffer, this.setCallReducerFlags.setNameFlags);
+    this.connection.callReducer("JoinLobby", __argsBuffer, this.setCallReducerFlags.joinLobbyFlags);
   }
 
-  onSetName(callback: (ctx: ReducerEventContext, name: string) => void) {
-    this.connection.onReducer("SetName", callback);
+  onJoinLobby(callback: (ctx: ReducerEventContext, gameToken: bigint) => void) {
+    this.connection.onReducer("JoinLobby", callback);
   }
 
-  removeOnSetName(callback: (ctx: ReducerEventContext, name: string) => void) {
-    this.connection.offReducer("SetName", callback);
+  removeOnJoinLobby(callback: (ctx: ReducerEventContext, gameToken: bigint) => void) {
+    this.connection.offReducer("JoinLobby", callback);
+  }
+
+  removeSelfFromLobby(gameToken: bigint) {
+    const __args = { gameToken };
+    let __writer = new BinaryWriter(1024);
+    RemoveSelfFromLobby.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("RemoveSelfFromLobby", __argsBuffer, this.setCallReducerFlags.removeSelfFromLobbyFlags);
+  }
+
+  onRemoveSelfFromLobby(callback: (ctx: ReducerEventContext, gameToken: bigint) => void) {
+    this.connection.onReducer("RemoveSelfFromLobby", callback);
+  }
+
+  removeOnRemoveSelfFromLobby(callback: (ctx: ReducerEventContext, gameToken: bigint) => void) {
+    this.connection.offReducer("RemoveSelfFromLobby", callback);
+  }
+
+  startLobby(name: string, maxPlayers: number, isPrivate: boolean) {
+    const __args = { name, maxPlayers, isPrivate };
+    let __writer = new BinaryWriter(1024);
+    StartLobby.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("StartLobby", __argsBuffer, this.setCallReducerFlags.startLobbyFlags);
+  }
+
+  onStartLobby(callback: (ctx: ReducerEventContext, name: string, maxPlayers: number, isPrivate: boolean) => void) {
+    this.connection.onReducer("StartLobby", callback);
+  }
+
+  removeOnStartLobby(callback: (ctx: ReducerEventContext, name: string, maxPlayers: number, isPrivate: boolean) => void) {
+    this.connection.offReducer("StartLobby", callback);
   }
 
 }
 
 export class SetReducerFlags {
-  sendMessageFlags: CallReducerFlags = 'FullUpdate';
-  sendMessage(flags: CallReducerFlags) {
-    this.sendMessageFlags = flags;
+  closeLobbyFlags: CallReducerFlags = 'FullUpdate';
+  closeLobby(flags: CallReducerFlags) {
+    this.closeLobbyFlags = flags;
   }
 
-  setNameFlags: CallReducerFlags = 'FullUpdate';
-  setName(flags: CallReducerFlags) {
-    this.setNameFlags = flags;
+  joinLobbyFlags: CallReducerFlags = 'FullUpdate';
+  joinLobby(flags: CallReducerFlags) {
+    this.joinLobbyFlags = flags;
+  }
+
+  removeSelfFromLobbyFlags: CallReducerFlags = 'FullUpdate';
+  removeSelfFromLobby(flags: CallReducerFlags) {
+    this.removeSelfFromLobbyFlags = flags;
+  }
+
+  startLobbyFlags: CallReducerFlags = 'FullUpdate';
+  startLobby(flags: CallReducerFlags) {
+    this.startLobbyFlags = flags;
   }
 
 }
@@ -184,12 +281,28 @@ export class SetReducerFlags {
 export class RemoteTables {
   constructor(private connection: DbConnectionImpl) {}
 
-  get message(): MessageTableHandle {
-    return new MessageTableHandle(this.connection.clientCache.getOrCreateTable<Message>(REMOTE_MODULE.tables.message));
+  get boss(): BossTableHandle {
+    return new BossTableHandle(this.connection.clientCache.getOrCreateTable<Boss>(REMOTE_MODULE.tables.boss));
   }
 
-  get user(): UserTableHandle {
-    return new UserTableHandle(this.connection.clientCache.getOrCreateTable<User>(REMOTE_MODULE.tables.user));
+  get card(): CardTableHandle {
+    return new CardTableHandle(this.connection.clientCache.getOrCreateTable<Card>(REMOTE_MODULE.tables.card));
+  }
+
+  get game(): GameTableHandle {
+    return new GameTableHandle(this.connection.clientCache.getOrCreateTable<Game>(REMOTE_MODULE.tables.game));
+  }
+
+  get gameSecrets(): GameSecretsTableHandle {
+    return new GameSecretsTableHandle(this.connection.clientCache.getOrCreateTable<GameSecrets>(REMOTE_MODULE.tables.game_secrets));
+  }
+
+  get lobby(): LobbyTableHandle {
+    return new LobbyTableHandle(this.connection.clientCache.getOrCreateTable<Lobby>(REMOTE_MODULE.tables.lobby));
+  }
+
+  get lobbySecrets(): LobbySecretsTableHandle {
+    return new LobbySecretsTableHandle(this.connection.clientCache.getOrCreateTable<LobbySecrets>(REMOTE_MODULE.tables.lobby_secrets));
   }
 }
 

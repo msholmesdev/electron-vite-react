@@ -30,32 +30,38 @@ import {
   Timestamp,
   deepEqual,
 } from "@clockworklabs/spacetimedb-sdk";
-
-export type SetName = {
-  name: string,
+export type Lobby = {
+  lobbyToken: bigint,
+  gameToken: bigint,
+  isConnected: boolean,
+  isReady: boolean,
 };
 
 /**
  * A namespace for generated helper functions.
  */
-export namespace SetName {
+export namespace Lobby {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
   */
   export function getTypeScriptAlgebraicType(): AlgebraicType {
     return AlgebraicType.createProductType([
-      new ProductTypeElement("name", AlgebraicType.createStringType()),
+      new ProductTypeElement("lobbyToken", AlgebraicType.createU64Type()),
+      new ProductTypeElement("gameToken", AlgebraicType.createU64Type()),
+      new ProductTypeElement("isConnected", AlgebraicType.createBoolType()),
+      new ProductTypeElement("isReady", AlgebraicType.createBoolType()),
     ]);
   }
 
-  export function serialize(writer: BinaryWriter, value: SetName): void {
-    SetName.getTypeScriptAlgebraicType().serialize(writer, value);
+  export function serialize(writer: BinaryWriter, value: Lobby): void {
+    Lobby.getTypeScriptAlgebraicType().serialize(writer, value);
   }
 
-  export function deserialize(reader: BinaryReader): SetName {
-    return SetName.getTypeScriptAlgebraicType().deserialize(reader);
+  export function deserialize(reader: BinaryReader): Lobby {
+    return Lobby.getTypeScriptAlgebraicType().deserialize(reader);
   }
 
 }
+
 

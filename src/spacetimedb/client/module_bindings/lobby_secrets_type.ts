@@ -30,34 +30,36 @@ import {
   Timestamp,
   deepEqual,
 } from "@clockworklabs/spacetimedb-sdk";
-export type Message = {
-  sender: Identity,
-  sent: Timestamp,
-  text: string,
+export type LobbySecrets = {
+  lobbyToken: bigint,
+  player: Identity,
+  gameToken: bigint,
+  isBanned: boolean,
 };
 
 /**
  * A namespace for generated helper functions.
  */
-export namespace Message {
+export namespace LobbySecrets {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
   */
   export function getTypeScriptAlgebraicType(): AlgebraicType {
     return AlgebraicType.createProductType([
-      new ProductTypeElement("sender", AlgebraicType.createIdentityType()),
-      new ProductTypeElement("sent", AlgebraicType.createTimestampType()),
-      new ProductTypeElement("text", AlgebraicType.createStringType()),
+      new ProductTypeElement("lobbyToken", AlgebraicType.createU64Type()),
+      new ProductTypeElement("player", AlgebraicType.createIdentityType()),
+      new ProductTypeElement("gameToken", AlgebraicType.createU64Type()),
+      new ProductTypeElement("isBanned", AlgebraicType.createBoolType()),
     ]);
   }
 
-  export function serialize(writer: BinaryWriter, value: Message): void {
-    Message.getTypeScriptAlgebraicType().serialize(writer, value);
+  export function serialize(writer: BinaryWriter, value: LobbySecrets): void {
+    LobbySecrets.getTypeScriptAlgebraicType().serialize(writer, value);
   }
 
-  export function deserialize(reader: BinaryReader): Message {
-    return Message.getTypeScriptAlgebraicType().deserialize(reader);
+  export function deserialize(reader: BinaryReader): LobbySecrets {
+    return LobbySecrets.getTypeScriptAlgebraicType().deserialize(reader);
   }
 
 }
