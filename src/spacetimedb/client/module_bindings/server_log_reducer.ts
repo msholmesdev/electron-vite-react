@@ -31,34 +31,30 @@ import {
   deepEqual,
 } from "@clockworklabs/spacetimedb-sdk";
 
-export type StartLobby = {
-  name: string,
-  maxPlayers: number,
-  isPrivate: boolean | undefined,
+export type ServerLog = {
+  logMessage: string,
 };
 
 /**
  * A namespace for generated helper functions.
  */
-export namespace StartLobby {
+export namespace ServerLog {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
   */
   export function getTypeScriptAlgebraicType(): AlgebraicType {
     return AlgebraicType.createProductType([
-      new ProductTypeElement("name", AlgebraicType.createStringType()),
-      new ProductTypeElement("maxPlayers", AlgebraicType.createU8Type()),
-      new ProductTypeElement("isPrivate", AlgebraicType.createOptionType(AlgebraicType.createBoolType())),
+      new ProductTypeElement("logMessage", AlgebraicType.createStringType()),
     ]);
   }
 
-  export function serialize(writer: BinaryWriter, value: StartLobby): void {
-    StartLobby.getTypeScriptAlgebraicType().serialize(writer, value);
+  export function serialize(writer: BinaryWriter, value: ServerLog): void {
+    ServerLog.getTypeScriptAlgebraicType().serialize(writer, value);
   }
 
-  export function deserialize(reader: BinaryReader): StartLobby {
-    return StartLobby.getTypeScriptAlgebraicType().deserialize(reader);
+  export function deserialize(reader: BinaryReader): ServerLog {
+    return ServerLog.getTypeScriptAlgebraicType().deserialize(reader);
   }
 
 }

@@ -30,11 +30,11 @@ function useConnect() {
         "Connected to SpacetimeDB with identity:",
         identity.toHexString()
       );
-      conn.reducers.onSendMessage(() => {
-        console.log("Message sent.");
+      conn.reducers.onStartLobby((ctx, name, players, isPrivate) => {
+        console.log("game started:", ctx, name, players, isPrivate);
       });
 
-      subscribeToQueries(conn, ["SELECT * FROM message", "SELECT * FROM user"]);
+      subscribeToQueries(conn, ["SELECT * FROM lobby", "SELECT * FROM game"]);
     };
 
     const onDisconnect = () => {

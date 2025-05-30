@@ -42,6 +42,8 @@ import { JoinLobby } from "./join_lobby_reducer.ts";
 export { JoinLobby };
 import { RemoveSelfFromLobby } from "./remove_self_from_lobby_reducer.ts";
 export { RemoveSelfFromLobby };
+import { ServerLog } from "./server_log_reducer.ts";
+export { ServerLog };
 import { StartLobby } from "./start_lobby_reducer.ts";
 export { StartLobby };
 
@@ -131,6 +133,10 @@ const REMOTE_MODULE = {
       reducerName: "RemoveSelfFromLobby",
       argsType: RemoveSelfFromLobby.getTypeScriptAlgebraicType(),
     },
+    ServerLog: {
+      reducerName: "ServerLog",
+      argsType: ServerLog.getTypeScriptAlgebraicType(),
+    },
     StartLobby: {
       reducerName: "StartLobby",
       argsType: StartLobby.getTypeScriptAlgebraicType(),
@@ -167,6 +173,7 @@ export type Reducer = never
 | { name: "CloseLobby", args: CloseLobby }
 | { name: "JoinLobby", args: JoinLobby }
 | { name: "RemoveSelfFromLobby", args: RemoveSelfFromLobby }
+| { name: "ServerLog", args: ServerLog }
 | { name: "StartLobby", args: StartLobby }
 ;
 
@@ -237,7 +244,23 @@ export class RemoteReducers {
     this.connection.offReducer("RemoveSelfFromLobby", callback);
   }
 
-  startLobby(name: string, maxPlayers: number, isPrivate: boolean) {
+  serverLog(logMessage: string) {
+    const __args = { logMessage };
+    let __writer = new BinaryWriter(1024);
+    ServerLog.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("ServerLog", __argsBuffer, this.setCallReducerFlags.serverLogFlags);
+  }
+
+  onServerLog(callback: (ctx: ReducerEventContext, logMessage: string) => void) {
+    this.connection.onReducer("ServerLog", callback);
+  }
+
+  removeOnServerLog(callback: (ctx: ReducerEventContext, logMessage: string) => void) {
+    this.connection.offReducer("ServerLog", callback);
+  }
+
+  startLobby(name: string, maxPlayers: number, isPrivate: boolean | undefined) {
     const __args = { name, maxPlayers, isPrivate };
     let __writer = new BinaryWriter(1024);
     StartLobby.getTypeScriptAlgebraicType().serialize(__writer, __args);
@@ -245,11 +268,11 @@ export class RemoteReducers {
     this.connection.callReducer("StartLobby", __argsBuffer, this.setCallReducerFlags.startLobbyFlags);
   }
 
-  onStartLobby(callback: (ctx: ReducerEventContext, name: string, maxPlayers: number, isPrivate: boolean) => void) {
+  onStartLobby(callback: (ctx: ReducerEventContext, name: string, maxPlayers: number, isPrivate: boolean | undefined) => void) {
     this.connection.onReducer("StartLobby", callback);
   }
 
-  removeOnStartLobby(callback: (ctx: ReducerEventContext, name: string, maxPlayers: number, isPrivate: boolean) => void) {
+  removeOnStartLobby(callback: (ctx: ReducerEventContext, name: string, maxPlayers: number, isPrivate: boolean | undefined) => void) {
     this.connection.offReducer("StartLobby", callback);
   }
 
@@ -269,6 +292,11 @@ export class SetReducerFlags {
   removeSelfFromLobbyFlags: CallReducerFlags = 'FullUpdate';
   removeSelfFromLobby(flags: CallReducerFlags) {
     this.removeSelfFromLobbyFlags = flags;
+  }
+
+  serverLogFlags: CallReducerFlags = 'FullUpdate';
+  serverLog(flags: CallReducerFlags) {
+    this.serverLogFlags = flags;
   }
 
   startLobbyFlags: CallReducerFlags = 'FullUpdate';

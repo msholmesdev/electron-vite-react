@@ -1,0 +1,11 @@
+import { useGameStore } from "./stores/useGameStore";
+
+export const useGamesFacade = () => {
+  const games = useGameStore((state) => state.games);
+  const addGame = useGameStore((state) => state.addGame);
+
+  return {
+    games,
+    addGame,
+  };
+};

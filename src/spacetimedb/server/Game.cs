@@ -4,19 +4,19 @@ using SpacetimeDB;
 public static partial class Module
 {
 
-/*
-    [ClientVisibilityFilter]
-    public static readonly Filter GAME_FILTER = new Filter.Sql(
-        "SELECT * FROM game JOIN game_secrets ON game.GameToken = game_secrets.GameToken WHERE HasStarted = true"
-    );
-    */
+    /*
+        [ClientVisibilityFilter]
+        public static readonly Filter GAME_FILTER = new Filter.Sql(
+            "SELECT * FROM game JOIN game_secrets ON game.GameToken = game_secrets.GameToken WHERE HasStarted = true"
+        );
+        */
 
     [Table(Name = "game", Public = true)]
     public partial class Game
     {
         [PrimaryKey, AutoInc]
         public ulong GameToken;
-        public  string? Name;
+        public string? Name;
         public byte MaxPlayers;
         public bool IsPrivate = false;
     }
@@ -25,9 +25,9 @@ public static partial class Module
     public partial class GameSecrets
     {
         [PrimaryKey]
-        public  ulong GameToken;
-        public  Identity Host;
-        public  Timestamp StartTime;
+        public ulong GameToken;
+        public Identity Host;
+        public Timestamp StartTime;
         public byte? CurrentTurnPosition;
         public bool IsActive = true;
         public bool HasStarted = false;
@@ -39,7 +39,7 @@ public static partial class Module
         [PrimaryKey, AutoInc]
         public ulong LobbyToken;
         [SpacetimeDB.Index.BTree]
-        public  ulong GameToken;
+        public ulong GameToken;
         public bool IsConnected;
         public bool IsReady = false;
     }
@@ -48,11 +48,11 @@ public static partial class Module
     public partial class LobbySecrets
     {
         [PrimaryKey]
-        public  ulong LobbyToken;
+        public ulong LobbyToken;
         [SpacetimeDB.Index.BTree]
-        public  Identity Player;
+        public Identity Player;
         [SpacetimeDB.Index.BTree]
-        public  ulong GameToken;
+        public ulong GameToken;
         public bool isBanned = false;
     }
 
@@ -70,10 +70,10 @@ public static partial class Module
                 ctx.Db.lobby.Delete(playerLobby);
                 ctx.Db.lobby_secrets.Delete(playerSecretLobby);
             }
-            
+
         }
     }
-    
+
     public static void DisconnectPlayerFromLobbies(ReducerContext ctx)
     {
         var playerSecretLobbies = ctx.Db.lobby_secrets.Player.Filter(ctx.Sender);
@@ -165,9 +165,10 @@ public static partial class Module
         }
     }
 
-    [Reducer]
-    public static void StartLobby(ReducerContext ctx, string name, byte maxPlayers, bool isPrivate = false)
+    [SpacetimeDB.Reducer]
+    public static void StartLobby(ReducerContext ctx, string name, byte maxPlayers, bool? isPrivate)
     {
+        Console.WriteLine("Starting lobby");
         name = ValidateName(name);
         bool playerCountValid = maxPlayers > 1 && maxPlayers < 7;
 
@@ -178,7 +179,7 @@ public static partial class Module
                 {
                     Name = name,
                     MaxPlayers = maxPlayers,
-                    IsPrivate = isPrivate,
+                    IsPrivate = isPrivate ?? false,
                 }
             );
 
@@ -193,5 +194,11 @@ public static partial class Module
 
             JoinLobby(ctx, row.GameToken);
         }
+    }
+
+    [SpacetimeDB.Reducer]
+    public static void ServerLog(ReducerContext ctx, string logMessage)
+    {
+         Log.Info($"logging message: {logMessage}");
     }
 }
