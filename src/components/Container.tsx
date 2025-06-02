@@ -14,7 +14,7 @@ const Container = ({
         className
       )}
     >
-      {children}
+      <div>{children}</div>
     </div>
   );
 };

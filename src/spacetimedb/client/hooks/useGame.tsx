@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { EventContext, Game, GameSecret } from "../module_bindings";
 import { useConnectionFacade } from "../facades/useConnectionFacade";
-import { useGamesFacade } from "../facades/useGameFacade";
+import { useGameFacade } from "../facades/useGameFacade";
 
 function useGame() {
   const { conn } = useConnectionFacade();
-  const { addGame, addGameSecret } = useGamesFacade();
+  const { addGame, addGameSecret } = useGameFacade();
 
   useEffect(() => {
     if (!conn) return;

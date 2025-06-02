@@ -1,6 +1,7 @@
 import { useConnectionFacade } from "@/spacetimedb/client/facades/useConnectionFacade";
 import { InitialLoading } from "../initialLoad/InitialLoading";
 import { PageLink } from "@/components/PageLink";
+import { ReactNode } from "react";
 
 function Menu() {
   const { connected } = useConnectionFacade();
@@ -14,4 +15,18 @@ function Menu() {
     </div>
   );
 }
-export { Menu };
+
+const MenuCard = ({ children }: { children: ReactNode }) => {
+  return (
+    <div className="flex flex-col gap-8">
+      <div className="bg-gray-800 w-full h-full border rounded-xl border-amber-500 flex flex-col items-center p-16 gap-4">
+        {children}
+      </div>
+      <div className="w-full flex items-center justify-center">
+        <PageLink link="/menu" name="Back" size="sm" />
+      </div>
+    </div>
+  );
+};
+
+export { Menu, MenuCard };
