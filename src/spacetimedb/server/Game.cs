@@ -1,15 +1,8 @@
 using SpacetimeDB;
 
-// #pragma warning disable STDB_UNSTABLE
+#pragma warning disable STDB_UNSTABLE
 public static partial class Module
 {
-
-    /*
-        [ClientVisibilityFilter]
-        public static readonly Filter GAME_FILTER = new Filter.Sql(
-            "SELECT * FROM game JOIN game_secrets ON game.GameToken = game_secrets.GameToken WHERE HasStarted = true"
-        );
-        */
 
     [Table(Name = "game", Public = true)]
     public partial class Game
@@ -21,11 +14,18 @@ public static partial class Module
         public bool IsPrivate = false;
     }
 
-    [Table(Name = "game_secrets", Public = false)]
-    public partial class GameSecrets
+    
+    [ClientVisibilityFilter]
+    public static readonly Filter GAME_SECRETS_FILTER = new Filter.Sql(
+        "SELECT * FROM game_secret WHERE Host = :sender"
+    );
+
+    [Table(Name = "game_secret", Public = true)]
+    public partial class GameSecret
     {
         [PrimaryKey]
         public ulong GameToken;
+        [SpacetimeDB.Index.BTree]
         public Identity Host;
         public Timestamp StartTime;
         public byte? CurrentTurnPosition;
@@ -68,7 +68,11 @@ public static partial class Module
             if (playerLobby is not null)
             {
                 ctx.Db.lobby.Delete(playerLobby);
-                ctx.Db.lobby_secrets.Delete(playerSecretLobby);
+                if (playerSecretLobbies is not null)
+                {
+                    ctx.Db.lobby_secrets.Delete(playerSecretLobby);
+                }
+                
             }
 
         }
@@ -112,7 +116,7 @@ public static partial class Module
     [Reducer]
     public static void JoinLobby(ReducerContext ctx, ulong gameToken)
     {
-        RemoveSelfFromLobby(ctx, gameToken);
+        //RemoveSelfFromLobby(ctx, gameToken);
 
         byte maxPlayers = (ctx.Db.game.GameToken.Find(gameToken)?.MaxPlayers) ?? throw new KeyNotFoundException("Host does not exist");
         int currentPlayers = ctx.Db.lobby.GameToken.Filter(gameToken).Count();
@@ -136,7 +140,7 @@ public static partial class Module
     [Reducer]
     public static void CloseLobby(ReducerContext ctx, ulong gameToken)
     {
-        var gameSecret = ctx.Db.game_secrets.GameToken.Find(gameToken);
+        var gameSecret = ctx.Db.game_secret.GameToken.Find(gameToken);
         var game = ctx.Db.game.GameToken.Find(gameToken);
 
         var lobbies = GetLobbies(ctx, gameToken);
@@ -156,7 +160,7 @@ public static partial class Module
 
         if (gameSecret is not null)
         {
-            ctx.Db.game_secrets.Delete(gameSecret);
+            ctx.Db.game_secret.Delete(gameSecret);
         }
 
         if (game is not null)
@@ -183,8 +187,8 @@ public static partial class Module
                 }
             );
 
-            ctx.Db.game_secrets.Insert(
-                new GameSecrets
+            ctx.Db.game_secret.Insert(
+                new GameSecret
                 {
                     GameToken = row.GameToken,
                     Host = ctx.Sender,

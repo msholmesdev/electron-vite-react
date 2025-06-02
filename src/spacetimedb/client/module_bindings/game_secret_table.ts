@@ -30,23 +30,23 @@ import {
   Timestamp,
   deepEqual,
 } from "@clockworklabs/spacetimedb-sdk";
-import { GameSecrets } from "./game_secrets_type";
+import { GameSecret } from "./game_secret_type";
 import { EventContext, Reducer, RemoteReducers, RemoteTables } from ".";
 
 /**
- * Table handle for the table `game_secrets`.
+ * Table handle for the table `game_secret`.
  *
- * Obtain a handle from the [`gameSecrets`] property on [`RemoteTables`],
- * like `ctx.db.gameSecrets`.
+ * Obtain a handle from the [`gameSecret`] property on [`RemoteTables`],
+ * like `ctx.db.gameSecret`.
  *
  * Users are encouraged not to explicitly reference this type,
  * but to directly chain method calls,
- * like `ctx.db.gameSecrets.on_insert(...)`.
+ * like `ctx.db.gameSecret.on_insert(...)`.
  */
-export class GameSecretsTableHandle {
-  tableCache: TableCache<GameSecrets>;
+export class GameSecretTableHandle {
+  tableCache: TableCache<GameSecret>;
 
-  constructor(tableCache: TableCache<GameSecrets>) {
+  constructor(tableCache: TableCache<GameSecret>) {
     this.tableCache = tableCache;
   }
 
@@ -54,24 +54,24 @@ export class GameSecretsTableHandle {
     return this.tableCache.count();
   }
 
-  iter(): Iterable<GameSecrets> {
+  iter(): Iterable<GameSecret> {
     return this.tableCache.iter();
   }
   /**
-   * Access to the `gameToken` unique index on the table `game_secrets`,
+   * Access to the `gameToken` unique index on the table `game_secret`,
    * which allows point queries on the field of the same name
-   * via the [`GameSecretsGameTokenUnique.find`] method.
+   * via the [`GameSecretGameTokenUnique.find`] method.
    *
    * Users are encouraged not to explicitly reference this type,
    * but to directly chain method calls,
-   * like `ctx.db.gameSecrets.gameToken().find(...)`.
+   * like `ctx.db.gameSecret.gameToken().find(...)`.
    *
-   * Get a handle on the `gameToken` unique index on the table `game_secrets`.
+   * Get a handle on the `gameToken` unique index on the table `game_secret`.
    */
   gameToken = {
     // Find the subscribed row whose `gameToken` column value is equal to `col_val`,
     // if such a row is present in the client cache.
-    find: (col_val: bigint): GameSecrets | undefined => {
+    find: (col_val: bigint): GameSecret | undefined => {
       for (let row of this.tableCache.iter()) {
         if (deepEqual(row.gameToken, col_val)) {
           return row;
@@ -80,27 +80,27 @@ export class GameSecretsTableHandle {
     },
   };
 
-  onInsert = (cb: (ctx: EventContext, row: GameSecrets) => void) => {
+  onInsert = (cb: (ctx: EventContext, row: GameSecret) => void) => {
     return this.tableCache.onInsert(cb);
   }
 
-  removeOnInsert = (cb: (ctx: EventContext, row: GameSecrets) => void) => {
+  removeOnInsert = (cb: (ctx: EventContext, row: GameSecret) => void) => {
     return this.tableCache.removeOnInsert(cb);
   }
 
-  onDelete = (cb: (ctx: EventContext, row: GameSecrets) => void) => {
+  onDelete = (cb: (ctx: EventContext, row: GameSecret) => void) => {
     return this.tableCache.onDelete(cb);
   }
 
-  removeOnDelete = (cb: (ctx: EventContext, row: GameSecrets) => void) => {
+  removeOnDelete = (cb: (ctx: EventContext, row: GameSecret) => void) => {
     return this.tableCache.removeOnDelete(cb);
   }
 
   // Updates are only defined for tables with primary keys.
-  onUpdate = (cb: (ctx: EventContext, oldRow: GameSecrets, newRow: GameSecrets) => void) => {
+  onUpdate = (cb: (ctx: EventContext, oldRow: GameSecret, newRow: GameSecret) => void) => {
     return this.tableCache.onUpdate(cb);
   }
 
-  removeOnUpdate = (cb: (ctx: EventContext, onRow: GameSecrets, newRow: GameSecrets) => void) => {
+  removeOnUpdate = (cb: (ctx: EventContext, onRow: GameSecret, newRow: GameSecret) => void) => {
     return this.tableCache.removeOnUpdate(cb);
   }}

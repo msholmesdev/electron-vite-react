@@ -34,7 +34,11 @@ function useConnect() {
         console.log("game started:", ctx, name, players, isPrivate);
       });
 
-      subscribeToQueries(conn, ["SELECT * FROM lobby", "SELECT * FROM game"]);
+      subscribeToQueries(conn, [
+        "SELECT * FROM lobby",
+        "SELECT * FROM game",
+        "SELECT * FROM game_secret",
+      ]);
     };
 
     const onDisconnect = () => {
@@ -49,7 +53,7 @@ function useConnect() {
     setConn(
       DbConnection.builder()
         .withUri("ws://localhost:3000")
-        .withModuleName("quickstart-chat")
+        .withModuleName("guild-wars")
         .withToken(localStorage.getItem("auth_token") || "")
         .onConnect(onConnect)
         .onDisconnect(onDisconnect)

@@ -54,8 +54,8 @@ import { CardTableHandle } from "./card_table.ts";
 export { CardTableHandle };
 import { GameTableHandle } from "./game_table.ts";
 export { GameTableHandle };
-import { GameSecretsTableHandle } from "./game_secrets_table.ts";
-export { GameSecretsTableHandle };
+import { GameSecretTableHandle } from "./game_secret_table.ts";
+export { GameSecretTableHandle };
 import { LobbyTableHandle } from "./lobby_table.ts";
 export { LobbyTableHandle };
 import { LobbySecretsTableHandle } from "./lobby_secrets_table.ts";
@@ -68,8 +68,8 @@ import { Card } from "./card_type.ts";
 export { Card };
 import { Game } from "./game_type.ts";
 export { Game };
-import { GameSecrets } from "./game_secrets_type.ts";
-export { GameSecrets };
+import { GameSecret } from "./game_secret_type.ts";
+export { GameSecret };
 import { Guilds } from "./guilds_type.ts";
 export { Guilds };
 import { Lobby } from "./lobby_type.ts";
@@ -96,9 +96,9 @@ const REMOTE_MODULE = {
       rowType: Game.getTypeScriptAlgebraicType(),
       primaryKey: "gameToken",
     },
-    game_secrets: {
-      tableName: "game_secrets",
-      rowType: GameSecrets.getTypeScriptAlgebraicType(),
+    game_secret: {
+      tableName: "game_secret",
+      rowType: GameSecret.getTypeScriptAlgebraicType(),
       primaryKey: "gameToken",
     },
     lobby: {
@@ -321,8 +321,8 @@ export class RemoteTables {
     return new GameTableHandle(this.connection.clientCache.getOrCreateTable<Game>(REMOTE_MODULE.tables.game));
   }
 
-  get gameSecrets(): GameSecretsTableHandle {
-    return new GameSecretsTableHandle(this.connection.clientCache.getOrCreateTable<GameSecrets>(REMOTE_MODULE.tables.game_secrets));
+  get gameSecret(): GameSecretTableHandle {
+    return new GameSecretTableHandle(this.connection.clientCache.getOrCreateTable<GameSecret>(REMOTE_MODULE.tables.game_secret));
   }
 
   get lobby(): LobbyTableHandle {

@@ -10,7 +10,7 @@ const Container = ({
   return (
     <div
       className={cn(
-        "w-full h-full flex items-center justify-center",
+        "flex items-center justify-center bg-gray-900 h-screen w-screen text-gray-200 text-xl",
         className
       )}
     >

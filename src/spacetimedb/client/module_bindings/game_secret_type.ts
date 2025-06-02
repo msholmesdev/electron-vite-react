@@ -30,7 +30,7 @@ import {
   Timestamp,
   deepEqual,
 } from "@clockworklabs/spacetimedb-sdk";
-export type GameSecrets = {
+export type GameSecret = {
   gameToken: bigint,
   host: Identity,
   startTime: Timestamp,
@@ -42,7 +42,7 @@ export type GameSecrets = {
 /**
  * A namespace for generated helper functions.
  */
-export namespace GameSecrets {
+export namespace GameSecret {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
@@ -58,12 +58,12 @@ export namespace GameSecrets {
     ]);
   }
 
-  export function serialize(writer: BinaryWriter, value: GameSecrets): void {
-    GameSecrets.getTypeScriptAlgebraicType().serialize(writer, value);
+  export function serialize(writer: BinaryWriter, value: GameSecret): void {
+    GameSecret.getTypeScriptAlgebraicType().serialize(writer, value);
   }
 
-  export function deserialize(reader: BinaryReader): GameSecrets {
-    return GameSecrets.getTypeScriptAlgebraicType().deserialize(reader);
+  export function deserialize(reader: BinaryReader): GameSecret {
+    return GameSecret.getTypeScriptAlgebraicType().deserialize(reader);
   }
 
 }
