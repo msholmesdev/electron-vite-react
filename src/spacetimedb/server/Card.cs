@@ -1,15 +1,46 @@
 using SpacetimeDB;
+
+//#pragma warning disable STDB_UNSTABLE
 public static partial class Module
 {
 
+    /*
+    [ClientVisibilityFilter]
+    public static readonly Filter CARD_FILTER = new Filter.Sql(
+    "SELECT * FROM card WHERE Location ! Unemployed"
+);
+*/
     [Table(Name = "card", Public = true)]
     public partial class Card
     {
-        [PrimaryKey]
-        public Identity Identity;
-        public Guilds? Employee;
-        public Identity? Boss;
-        public Locations? Location;
+        [PrimaryKey, AutoInc]
+        public ulong CardToken;
+        [SpacetimeDB.Index.BTree]
+        public ulong? LobbyToken;
+        [SpacetimeDB.Index.BTree]
+        public ulong GameToken;
+        public Guilds Employee;
+        public Locations Location;
         public bool isUsed;
+    }
+
+    public static void InitializeCards(ReducerContext ctx, ulong gameToken)
+    {
+        byte numberOfEachCard = 10;
+        foreach (var guild in Enum.GetValues<Guilds>())
+        {
+            for (int i = 0; i < numberOfEachCard; i++)
+            {
+                ctx.Db.card.Insert(
+                   new Card
+                   {
+                       GameToken = gameToken,
+                       Employee = guild,
+                       Location = Locations.Unemployed,
+                       isUsed = true,
+                   }
+               );
+            }
+        }
     }
 }

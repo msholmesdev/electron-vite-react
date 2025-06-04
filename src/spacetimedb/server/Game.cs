@@ -12,11 +12,12 @@ public static partial class Module
         public string? Name;
         public byte MaxPlayers;
         public bool IsPrivate = false;
+        public byte? CurrentTurnPosition;
     }
 
     
     [ClientVisibilityFilter]
-    public static readonly Filter GAME_SECRETS_FILTER = new Filter.Sql(
+    public static readonly Filter GAME_SECRET_FILTER = new Filter.Sql(
         "SELECT * FROM game_secret WHERE Host = :sender"
     );
 
@@ -28,7 +29,6 @@ public static partial class Module
         [SpacetimeDB.Index.BTree]
         public Identity Host;
         public Timestamp StartTime;
-        public byte? CurrentTurnPosition;
         public bool IsActive = true;
         public bool HasStarted = false;
     }
@@ -42,6 +42,8 @@ public static partial class Module
         public ulong GameToken;
         public bool IsConnected;
         public bool IsReady = false;
+        public Guilds? Representative;
+        public byte? turnPosition;
     }
 
     [Table(Name = "lobby_secrets", Public = false)]
@@ -169,7 +171,7 @@ public static partial class Module
         }
     }
 
-    [SpacetimeDB.Reducer]
+    [Reducer]
     public static void StartLobby(ReducerContext ctx, string name, byte maxPlayers, bool? isPrivate)
     {
         Console.WriteLine("Starting lobby");
@@ -200,7 +202,7 @@ public static partial class Module
         }
     }
 
-    [SpacetimeDB.Reducer]
+    [Reducer]
     public static void ServerLog(ReducerContext ctx, string logMessage)
     {
          Log.Info($"logging message: {logMessage}");

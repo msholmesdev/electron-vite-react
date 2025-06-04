@@ -3,6 +3,7 @@ spacetime start
 spacetime publish --project-path server guild-wars
 spacetime logs guild-wars
 spacetime sql guild-wars "SELECT * FROM game_secret"
+spacetime delete guild-wars
 
 
 CLIENT: C:\Coding\react-projects\guild-wars\src\spacetimedb> -->
