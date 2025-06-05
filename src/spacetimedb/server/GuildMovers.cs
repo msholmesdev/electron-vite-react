@@ -2,10 +2,10 @@ using SpacetimeDB;
 
 public static partial class Module
 {
-    public static bool MoveRepresentativeUp(ReducerContext ctx, ulong GuildToken)
+    public static bool MoveRepresentativeUp(ReducerContext ctx, ulong guildToken)
     {
         var topY = 10;
-        var guild = ctx.Db.guild.GuildToken.Find(GuildToken);
+        var guild = ctx.Db.guild.GuildToken.Find(guildToken);
         if (guild is null || guild.Y == topY)
         {
             return false;
@@ -33,10 +33,10 @@ public static partial class Module
         return true;
     }
 
-    public static bool MoveRepresentativeDown(ReducerContext ctx, ulong GuildToken)
+    public static bool MoveRepresentativeDown(ReducerContext ctx, ulong guildToken)
     {
         var bottomY = 0;
-        var guild = ctx.Db.guild.GuildToken.Find(GuildToken);
+        var guild = ctx.Db.guild.GuildToken.Find(guildToken);
         if (guild is null || guild.Y == bottomY)
         {
             return false;

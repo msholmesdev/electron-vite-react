@@ -3,19 +3,6 @@ using SpacetimeDB;
 public static partial class Module
 {
     [Reducer]
-    public static void PlayCard(ReducerContext ctx, ulong cardToken, ulong lobbyToken)
-    {
-        var isPlayerTurn = ValidateIsTurn(ctx, lobbyToken);
-        var validCard = ValidateHasUnusedCard(ctx, cardToken);
-
-        if (validCard is null || !isPlayerTurn)
-        {
-            // handle not turn or not playable
-            return;
-        }
-    }
-
-    [Reducer]
     public static void GoldDigger(ReducerContext ctx, ulong cardToken, ulong lobbyToken)
     {
         var isPlayerTurn = ValidateIsTurn(ctx, lobbyToken);
@@ -28,6 +15,7 @@ public static partial class Module
         }
 
         AddCardsFromUnemployedToResume(ctx, lobbyToken, 2);
+        validCard.isUsed = true;
     }
 
     [Reducer]
@@ -52,19 +40,75 @@ public static partial class Module
 
         anotherCard.LobbyToken = lobbyToken;
         anotherCard.Location = Locations.Resume;
+        validCard.isUsed = true;
     }
 
     [Reducer]
-    public static void Politician(ReducerContext ctx, ulong cardToken, ulong lobbyToken)
+    public static void Politician(ReducerContext ctx, ulong playCardToken, ulong resumeCardToken, ulong lobbyToken, ulong otherBossLobbyToken)
     {
         var isPlayerTurn = ValidateIsTurn(ctx, lobbyToken);
-        var validCard = ValidateHasUnusedCard(ctx, cardToken);
+        var validCard = ValidateHasUnusedCard(ctx, playCardToken);
 
         if (validCard is null || !isPlayerTurn)
         {
             // handle not turn or not playable
             return;
         }
+
+        var validResumeCard = VerifyCardInResume(ctx, resumeCardToken);
+        if (validResumeCard is null)
+        {
+            return;
+        }
+
+        var random = new Random();
+        var otherBossCardsInResume = ctx.Db.card.LobbyToken.Filter(otherBossLobbyToken)
+                                    .Where((card) => card.Location == Locations.Resume)
+                                    .OrderBy(_ => random.Next()).ToList();
+
+        if (otherBossCardsInResume is null || otherBossCardsInResume.Count == 0)
+        {
+            return;
+        }
+
+        // Get up to 2 cards
+        var selectedCards = otherBossCardsInResume.Take(Math.Min(2, otherBossCardsInResume.Count));
+
+        validResumeCard.LobbyToken = otherBossLobbyToken;
+
+        foreach (var card in selectedCards)
+        {
+            card.LobbyToken = lobbyToken;
+        }
+        validCard.isUsed = true;
+    }
+
+    public static void Thief(ReducerContext ctx, ulong playCardToken, ulong lobbyToken, ulong otherBossLobbyToken)
+    {
+        var isPlayerTurn = ValidateIsTurn(ctx, lobbyToken);
+        var validCard = ValidateHasUnusedCard(ctx, playCardToken);
+
+        if (validCard is null || !isPlayerTurn)
+        {
+            // handle not turn or not playable
+            return;
+        }
+
+        var random = new Random();
+        var otherBossCardsInResume = ctx.Db.card.LobbyToken.Filter(otherBossLobbyToken)
+                                    .Where((card) => card.Location == Locations.Resume)
+                                    .OrderBy(_ => random.Next()).ToList();
+
+        if (otherBossCardsInResume is null || otherBossCardsInResume.Count == 0)
+        {
+            return;
+        }
+
+        // Get up to 2 cards
+        var selectedCard = otherBossCardsInResume.First();
+        selectedCard.LobbyToken = lobbyToken;
+        selectedCard.Location = Locations.Company;
+        validCard.isUsed = true;
     }
 
     [Reducer]
@@ -121,6 +165,66 @@ public static partial class Module
 
         AddCardFromResumeToCompany(ctx, cardTokenFromResumeToCompany1);
         AddCardFromResumeToCompany(ctx, cardTokenFromResumeToCompany2);
+        validCard.isUsed = true;
+    }
+
+    [Reducer]
+    public static void Gamer(ReducerContext ctx, ulong cardToken, ulong lobbyToken, ulong guildToken)
+    {
+        var isPlayerTurn = ValidateIsTurn(ctx, lobbyToken);
+        var validCard = ValidateHasUnusedCard(ctx, cardToken);
+
+        if (validCard is null || !isPlayerTurn)
+        {
+            // handle not turn or not playable
+            return;
+        }
+
+        if (!MoveRepresentativeUp(ctx, guildToken))
+        {
+            return;
+        }
+
+        validCard.isUsed = true;
+    }
+
+    [Reducer]
+    public static void Karen(ReducerContext ctx, ulong cardToken, ulong lobbyToken, ulong guildToken)
+    {
+        var isPlayerTurn = ValidateIsTurn(ctx, lobbyToken);
+        var validCard = ValidateHasUnusedCard(ctx, cardToken);
+
+        if (validCard is null || !isPlayerTurn)
+        {
+            // handle not turn or not playable
+            return;
+        }
+
+        if (!MoveRepresentativeDown(ctx, guildToken))
+        {
+            return;
+        }
+
+        validCard.isUsed = true;
+    }
+
+    [Reducer]
+    public static void TaxiDriver(ReducerContext ctx, ulong cardToken, ulong lobbyToken, byte x1, byte x2)
+    {
+        var isPlayerTurn = ValidateIsTurn(ctx, lobbyToken);
+        var validCard = ValidateHasUnusedCard(ctx, cardToken);
+
+        if (validCard is null || !isPlayerTurn)
+        {
+            // handle not turn or not playable
+            return;
+        }
+
+        if (!MoveBottomRepresentativeOfX1ToX2(ctx, x1, x2))
+        {
+            return;
+        }
+        
         validCard.isUsed = true;
     }
 }

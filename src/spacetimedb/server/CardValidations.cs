@@ -74,6 +74,17 @@ public static partial class Module
 
     public static Card? VerifyCardInResume(ReducerContext ctx, ulong cardToken)
     {
-        return null;
+        var card = ctx.Db.card.CardToken.Find(cardToken);
+        if (card is null)
+        {
+            return null;
+        }
+
+        if (card.Location != Locations.Resume)
+        {
+            return null;
+        }
+
+        return card;
     }
 }
