@@ -2,15 +2,26 @@ import { MenuCard } from "./Menu";
 import { Game } from "@/spacetimedb/client/module_bindings";
 import { useGameFacade } from "@/spacetimedb/client/facades/useGameFacade";
 import { useLobbyFacade } from "@/spacetimedb/client/facades/useLobbyFacade";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Lobbies() {
   const { games } = useGameFacade();
   const { joinLobbyReducer } = useLobbyFacade();
+  const { connectedLobby } = useLobbyFacade();
+  const navigate = useNavigate();
 
-  const join = (token: bigint) => {
-    console.log("joining lobby: ", token);
-    joinLobbyReducer(token);
+  const join = (gameToken: bigint) => {
+    console.log("trying to join lobby: ", gameToken);
+    joinLobbyReducer(gameToken);
   };
+
+  useEffect(() => {
+    if (connectedLobby) {
+      console.log("joining lobby", connectedLobby);
+      navigate("/lobby");
+    }
+  }, [connectedLobby]);
 
   return (
     <MenuCard>

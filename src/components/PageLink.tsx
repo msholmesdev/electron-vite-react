@@ -2,7 +2,7 @@ import { cn } from "@/utils/styles";
 import { Link } from "react-router-dom";
 
 type PageLinkProps = {
-  link: "/menu" | "/host" | "/lobby" | "/game";
+  link: "/menu" | "/host" | "/lobby" | "/game" | "/lobbies";
   name: string;
   size?: "sm" | "lg";
 };

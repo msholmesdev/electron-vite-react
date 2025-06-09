@@ -39,6 +39,7 @@ if (!app.requestSingleInstanceLock()) {
 
 let win: BrowserWindow | null = null;
 let win2: BrowserWindow | null = null;
+
 const preload = path.join(__dirname, "../preload/index.mjs");
 const indexHtml = path.join(RENDERER_DIST, "index.html");
 
@@ -62,7 +63,7 @@ async function createWindow() {
   win2 = new BrowserWindow({
     width: 1700,
     height: 900,
-    title: "Main window",
+    title: "Client Main window",
     icon: path.join(process.env.VITE_PUBLIC, "favicon.ico"),
     webPreferences: {
       preload,

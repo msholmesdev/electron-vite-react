@@ -7,6 +7,8 @@ import { Host } from "./features/lobby/Host";
 import { Lobbies } from "./features/lobby/Lobbies";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useGame } from "./spacetimedb/client/hooks/useGame";
+import { useLobby } from "./spacetimedb/client/hooks/useLobby";
+import { Lobby } from "./features/lobby/Lobby";
 
 const Game = () => <h2>Game</h2>;
 
@@ -14,6 +16,7 @@ function App() {
   const { conn, connected, identity } = useConnect();
   const { setConnection, setConnected, setIdentity } = useConnectionFacade();
   useGame();
+  useLobby();
 
   useEffect(() => {
     setConnection(conn);
@@ -27,7 +30,8 @@ function App() {
         <Routes>
           <Route path="/menu" element={<Menu />} />
           <Route path="/host" element={<Host />} />
-          <Route path="/lobby" element={<Lobbies />} />
+          <Route path="/lobby" element={<Lobby />} />
+          <Route path="/lobbies" element={<Lobbies />} />
           <Route path="/game" element={<Game />} />
           <Route path="*" element={<Menu />} /> {/* Default fallback */}
         </Routes>

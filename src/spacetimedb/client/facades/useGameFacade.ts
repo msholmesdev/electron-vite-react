@@ -1,5 +1,7 @@
+import { useEffect, useMemo } from "react";
 import { useGameStore } from "./stores/useGameStore";
 import { useConnectionFacade } from "./useConnectionFacade";
+import { useLobbyFacade } from "./useLobbyFacade";
 
 export const useGameFacade = () => {
   const games = useGameStore((state) => state.games);
@@ -7,11 +9,22 @@ export const useGameFacade = () => {
   const gamesSecret = useGameStore((state) => state.gamesSecret);
   const addGameSecret = useGameStore((state) => state.addGameSecret);
   const { conn } = useConnectionFacade();
+  const { connectedLobby } = useLobbyFacade();
 
   const PLAYER_MIN = 3;
   const PLAYER_MAX = 10;
   const LOBBY_LENGTH_MIN = 4;
   const LOBBY_LENGTH_MAX = 100;
+
+  const isHost = useMemo(() => {
+    if (!connectedLobby) return false;
+
+    const game = gamesSecret.find(
+      (gameSecret) => gameSecret.gameToken === connectedLobby.gameToken
+    );
+
+    return !!game?.gameToken;
+  }, [connectedLobby, gamesSecret]);
 
   const hostGame = (
     lobbyName: string,
@@ -42,6 +55,7 @@ export const useGameFacade = () => {
     gamesSecret,
     addGameSecret,
     hostGame,
+    isHost,
     PLAYER_MIN,
     PLAYER_MAX,
     LOBBY_LENGTH_MIN,

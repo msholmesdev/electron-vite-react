@@ -25,7 +25,7 @@ function useConnect() {
     ) => {
       setIdentity(identity);
       setConnected(true);
-      localStorage.setItem("auth_token", token);
+      sessionStorage.setItem("auth_token", token);
       console.log(
         "Connected to SpacetimeDB with identity:",
         identity.toHexString()
@@ -33,6 +33,7 @@ function useConnect() {
 
       subscribeToQueries(conn, [
         "SELECT * FROM lobby",
+        "SELECT * FROM lobby_secret",
         "SELECT * FROM game",
         "SELECT * FROM game_secret",
       ]);
@@ -47,11 +48,13 @@ function useConnect() {
       console.log("Error connecting to SpacetimeDB:", err);
     };
 
+    const token = sessionStorage.getItem("auth_token");
+
     setConn(
       DbConnection.builder()
         .withUri("ws://localhost:3000")
         .withModuleName("guild-wars")
-        .withToken(localStorage.getItem("auth_token") || "")
+        .withToken(token ?? "")
         .onConnect(onConnect)
         .onDisconnect(onDisconnect)
         .onConnectError(onConnectError)

@@ -123,7 +123,8 @@ public static partial class Module
     [Reducer]
     public static void JoinLobby(ReducerContext ctx, ulong gameToken)
     {
-        //RemoveSelfFromLobby(ctx, gameToken);
+        //RemoveSelfFromLobby(ctx, gameToken);.0
+        DisconnectPlayerFromLobbies(ctx);
 
         byte maxPlayers = (ctx.Db.game.GameToken.Find(gameToken)?.MaxPlayers) ?? throw new KeyNotFoundException("Host does not exist");
         int currentPlayers = ctx.Db.lobby.GameToken.Filter(gameToken).Count();
@@ -133,7 +134,8 @@ public static partial class Module
         }
         var row = ctx.Db.lobby.Insert(new Lobby
         {
-            GameToken = gameToken
+            GameToken = gameToken,
+            IsConnected = true
         });
 
         ctx.Db.lobby_secret.Insert(new LobbySecret

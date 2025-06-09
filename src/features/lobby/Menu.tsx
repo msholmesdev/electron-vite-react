@@ -10,7 +10,7 @@ function Menu() {
       {!connected && false && <InitialLoading />}
       <div className="flex flex-col items-center justify-center gap-20 bg-gray-800 h-screen w-screen">
         <PageLink link="/host" name="Host a game" />
-        <PageLink link="/lobby" name="Join a game" />
+        <PageLink link="/lobbies" name="Join a game" />
       </div>
     </div>
   );

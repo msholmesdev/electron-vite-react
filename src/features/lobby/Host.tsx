@@ -5,22 +5,25 @@ import { Checkbox } from "@/components/Checkbox";
 import { Slider } from "@/components/Slider";
 import { useGameFacade } from "@/spacetimedb/client/facades/useGameFacade";
 import { MenuCard } from "./Menu";
+import { useNavigate } from "react-router-dom";
 
 function Host() {
   const { gamesSecret, hostGame, PLAYER_MIN, PLAYER_MAX } = useGameFacade();
   const [lobbyName, setLobbyName] = useState("");
   const [playerCount, setPlayerCount] = useState(4);
   const [isPrivate, setIsPrivate] = useState(false);
+  const navigate = useNavigate();
 
   const onClick = () => {
     hostGame(lobbyName, playerCount, isPrivate);
   };
 
   useEffect(() => {
-    console.log("added game", gamesSecret);
     if (gamesSecret && gamesSecret.length > 0) {
+      console.log("added game", gamesSecret);
       const gameSecret = gamesSecret[0];
       console.log(gameSecret.isActive);
+      navigate("/lobby");
     }
   }, [gamesSecret]);
 
