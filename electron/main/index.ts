@@ -38,6 +38,7 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 let win: BrowserWindow | null = null;
+let win2: BrowserWindow | null = null;
 const preload = path.join(__dirname, "../preload/index.mjs");
 const indexHtml = path.join(RENDERER_DIST, "index.html");
 
@@ -58,13 +59,32 @@ async function createWindow() {
     },
   });
 
+  win2 = new BrowserWindow({
+    width: 1700,
+    height: 900,
+    title: "Main window",
+    icon: path.join(process.env.VITE_PUBLIC, "favicon.ico"),
+    webPreferences: {
+      preload,
+      // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
+      // nodeIntegration: true,
+
+      // Consider using contextBridge.exposeInMainWorld
+      // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
+      // contextIsolation: false,
+    },
+  });
+
   if (VITE_DEV_SERVER_URL) {
     // #298
     win.loadURL(VITE_DEV_SERVER_URL);
+    win2.loadURL(VITE_DEV_SERVER_URL);
     // Open devTool if the app is not packaged
     win.webContents.openDevTools();
+    win2.webContents.openDevTools();
   } else {
     win.loadFile(indexHtml);
+    win2.loadFile(indexHtml);
   }
 
   // Test actively push message to the Electron-Renderer
@@ -78,8 +98,14 @@ async function createWindow() {
     return { action: "deny" };
   });
 
+  win2.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith("https:")) shell.openExternal(url);
+    return { action: "deny" };
+  });
+
   // Auto update
   update(win);
+  update(win2);
 }
 
 app.whenReady().then(createWindow);

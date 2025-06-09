@@ -5,7 +5,6 @@ import { Checkbox } from "@/components/Checkbox";
 import { Slider } from "@/components/Slider";
 import { useGameFacade } from "@/spacetimedb/client/facades/useGameFacade";
 import { MenuCard } from "./Menu";
-import { PageLink } from "@/components/PageLink";
 
 function Host() {
   const { gamesSecret, hostGame, PLAYER_MIN, PLAYER_MAX } = useGameFacade();
@@ -19,7 +18,7 @@ function Host() {
 
   useEffect(() => {
     console.log("added game", gamesSecret);
-    if (gamesSecret) {
+    if (gamesSecret && gamesSecret.length > 0) {
       const gameSecret = gamesSecret[0];
       console.log(gameSecret.isActive);
     }

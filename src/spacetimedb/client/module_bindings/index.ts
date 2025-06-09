@@ -76,8 +76,8 @@ import { GuildTableHandle } from "./guild_table.ts";
 export { GuildTableHandle };
 import { LobbyTableHandle } from "./lobby_table.ts";
 export { LobbyTableHandle };
-import { LobbySecretsTableHandle } from "./lobby_secrets_table.ts";
-export { LobbySecretsTableHandle };
+import { LobbySecretTableHandle } from "./lobby_secret_table.ts";
+export { LobbySecretTableHandle };
 
 // Import and reexport all types
 import { Card } from "./card_type.ts";
@@ -92,8 +92,8 @@ import { Guilds } from "./guilds_type.ts";
 export { Guilds };
 import { Lobby } from "./lobby_type.ts";
 export { Lobby };
-import { LobbySecrets } from "./lobby_secrets_type.ts";
-export { LobbySecrets };
+import { LobbySecret } from "./lobby_secret_type.ts";
+export { LobbySecret };
 import { Locations } from "./locations_type.ts";
 export { Locations };
 
@@ -124,9 +124,9 @@ const REMOTE_MODULE = {
       rowType: Lobby.getTypeScriptAlgebraicType(),
       primaryKey: "lobbyToken",
     },
-    lobby_secrets: {
-      tableName: "lobby_secrets",
-      rowType: LobbySecrets.getTypeScriptAlgebraicType(),
+    lobby_secret: {
+      tableName: "lobby_secret",
+      rowType: LobbySecret.getTypeScriptAlgebraicType(),
       primaryKey: "lobbyToken",
     },
   },
@@ -581,8 +581,8 @@ export class RemoteTables {
     return new LobbyTableHandle(this.connection.clientCache.getOrCreateTable<Lobby>(REMOTE_MODULE.tables.lobby));
   }
 
-  get lobbySecrets(): LobbySecretsTableHandle {
-    return new LobbySecretsTableHandle(this.connection.clientCache.getOrCreateTable<LobbySecrets>(REMOTE_MODULE.tables.lobby_secrets));
+  get lobbySecret(): LobbySecretTableHandle {
+    return new LobbySecretTableHandle(this.connection.clientCache.getOrCreateTable<LobbySecret>(REMOTE_MODULE.tables.lobby_secret));
   }
 }
 

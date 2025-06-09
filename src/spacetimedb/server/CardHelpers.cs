@@ -19,7 +19,7 @@ public static partial class Module
             return null;
         }
 
-        var lobbySecret = ctx.Db.lobby_secrets.LobbyToken.Find(lobbyToken.Value);
+        var lobbySecret = ctx.Db.lobby_secret.LobbyToken.Find(lobbyToken.Value);
 
         if (lobbySecret is null)
         {

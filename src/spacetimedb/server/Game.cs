@@ -46,8 +46,13 @@ public static partial class Module
         public byte? turnPosition;
     }
 
-    [Table(Name = "lobby_secrets", Public = false)]
-    public partial class LobbySecrets
+    [ClientVisibilityFilter]
+    public static readonly Filter LOBBY_SECRET_FILTER = new Filter.Sql(
+        "SELECT * FROM lobby_secret WHERE Player = :sender"
+    );
+
+    [Table(Name = "lobby_secret", Public = true)]
+    public partial class LobbySecret
     {
         [PrimaryKey]
         public ulong LobbyToken;
@@ -61,7 +66,7 @@ public static partial class Module
     [Reducer]
     public static void RemoveSelfFromLobby(ReducerContext ctx, ulong gameToken)
     {
-        var playerSecretLobbies = ctx.Db.lobby_secrets.GameToken
+        var playerSecretLobbies = ctx.Db.lobby_secret.GameToken
                                     .Filter(gameToken).Where(Lobby => Lobby.Player == ctx.Sender);
         var playerSecretLobby = playerSecretLobbies.First();
         if (playerSecretLobby is not null)
@@ -72,7 +77,7 @@ public static partial class Module
                 ctx.Db.lobby.Delete(playerLobby);
                 if (playerSecretLobbies is not null)
                 {
-                    ctx.Db.lobby_secrets.Delete(playerSecretLobby);
+                    ctx.Db.lobby_secret.Delete(playerSecretLobby);
                 }
                 
             }
@@ -82,7 +87,7 @@ public static partial class Module
 
     public static void DisconnectPlayerFromLobbies(ReducerContext ctx)
     {
-        var playerSecretLobbies = ctx.Db.lobby_secrets.Player.Filter(ctx.Sender);
+        var playerSecretLobbies = ctx.Db.lobby_secret.Player.Filter(ctx.Sender);
 
         if (playerSecretLobbies is not null)
         {
@@ -131,7 +136,7 @@ public static partial class Module
             GameToken = gameToken
         });
 
-        ctx.Db.lobby_secrets.Insert(new LobbySecrets
+        ctx.Db.lobby_secret.Insert(new LobbySecret
         {
             LobbyToken = row.LobbyToken,
             Player = ctx.Sender,
@@ -151,10 +156,10 @@ public static partial class Module
         {
             foreach (var lobby in lobbies)
             {
-                var lobbySecret = ctx.Db.lobby_secrets.LobbyToken.Find(lobby.LobbyToken);
+                var lobbySecret = ctx.Db.lobby_secret.LobbyToken.Find(lobby.LobbyToken);
                 if (lobbySecret is not null)
                 {
-                    ctx.Db.lobby_secrets.Delete(lobbySecret);
+                    ctx.Db.lobby_secret.Delete(lobbySecret);
                 }
                 ctx.Db.lobby.Delete(lobby);
             }

@@ -6,7 +6,7 @@ public static partial class Module
     public static bool ValidateIsTurn(ReducerContext ctx, ulong lobbyToken)
     {
         var lobby = ctx.Db.lobby.LobbyToken.Find(lobbyToken);
-        var lobbySecret = ctx.Db.lobby_secrets.LobbyToken.Find(lobbyToken);
+        var lobbySecret = ctx.Db.lobby_secret.LobbyToken.Find(lobbyToken);
         if (lobby is null || lobbySecret is null)
         {
             // handle bad lobby

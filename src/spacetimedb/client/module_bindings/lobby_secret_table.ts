@@ -30,23 +30,23 @@ import {
   Timestamp,
   deepEqual,
 } from "@clockworklabs/spacetimedb-sdk";
-import { LobbySecrets } from "./lobby_secrets_type";
+import { LobbySecret } from "./lobby_secret_type";
 import { EventContext, Reducer, RemoteReducers, RemoteTables } from ".";
 
 /**
- * Table handle for the table `lobby_secrets`.
+ * Table handle for the table `lobby_secret`.
  *
- * Obtain a handle from the [`lobbySecrets`] property on [`RemoteTables`],
- * like `ctx.db.lobbySecrets`.
+ * Obtain a handle from the [`lobbySecret`] property on [`RemoteTables`],
+ * like `ctx.db.lobbySecret`.
  *
  * Users are encouraged not to explicitly reference this type,
  * but to directly chain method calls,
- * like `ctx.db.lobbySecrets.on_insert(...)`.
+ * like `ctx.db.lobbySecret.on_insert(...)`.
  */
-export class LobbySecretsTableHandle {
-  tableCache: TableCache<LobbySecrets>;
+export class LobbySecretTableHandle {
+  tableCache: TableCache<LobbySecret>;
 
-  constructor(tableCache: TableCache<LobbySecrets>) {
+  constructor(tableCache: TableCache<LobbySecret>) {
     this.tableCache = tableCache;
   }
 
@@ -54,24 +54,24 @@ export class LobbySecretsTableHandle {
     return this.tableCache.count();
   }
 
-  iter(): Iterable<LobbySecrets> {
+  iter(): Iterable<LobbySecret> {
     return this.tableCache.iter();
   }
   /**
-   * Access to the `lobbyToken` unique index on the table `lobby_secrets`,
+   * Access to the `lobbyToken` unique index on the table `lobby_secret`,
    * which allows point queries on the field of the same name
-   * via the [`LobbySecretsLobbyTokenUnique.find`] method.
+   * via the [`LobbySecretLobbyTokenUnique.find`] method.
    *
    * Users are encouraged not to explicitly reference this type,
    * but to directly chain method calls,
-   * like `ctx.db.lobbySecrets.lobbyToken().find(...)`.
+   * like `ctx.db.lobbySecret.lobbyToken().find(...)`.
    *
-   * Get a handle on the `lobbyToken` unique index on the table `lobby_secrets`.
+   * Get a handle on the `lobbyToken` unique index on the table `lobby_secret`.
    */
   lobbyToken = {
     // Find the subscribed row whose `lobbyToken` column value is equal to `col_val`,
     // if such a row is present in the client cache.
-    find: (col_val: bigint): LobbySecrets | undefined => {
+    find: (col_val: bigint): LobbySecret | undefined => {
       for (let row of this.tableCache.iter()) {
         if (deepEqual(row.lobbyToken, col_val)) {
           return row;
@@ -80,27 +80,27 @@ export class LobbySecretsTableHandle {
     },
   };
 
-  onInsert = (cb: (ctx: EventContext, row: LobbySecrets) => void) => {
+  onInsert = (cb: (ctx: EventContext, row: LobbySecret) => void) => {
     return this.tableCache.onInsert(cb);
   }
 
-  removeOnInsert = (cb: (ctx: EventContext, row: LobbySecrets) => void) => {
+  removeOnInsert = (cb: (ctx: EventContext, row: LobbySecret) => void) => {
     return this.tableCache.removeOnInsert(cb);
   }
 
-  onDelete = (cb: (ctx: EventContext, row: LobbySecrets) => void) => {
+  onDelete = (cb: (ctx: EventContext, row: LobbySecret) => void) => {
     return this.tableCache.onDelete(cb);
   }
 
-  removeOnDelete = (cb: (ctx: EventContext, row: LobbySecrets) => void) => {
+  removeOnDelete = (cb: (ctx: EventContext, row: LobbySecret) => void) => {
     return this.tableCache.removeOnDelete(cb);
   }
 
   // Updates are only defined for tables with primary keys.
-  onUpdate = (cb: (ctx: EventContext, oldRow: LobbySecrets, newRow: LobbySecrets) => void) => {
+  onUpdate = (cb: (ctx: EventContext, oldRow: LobbySecret, newRow: LobbySecret) => void) => {
     return this.tableCache.onUpdate(cb);
   }
 
-  removeOnUpdate = (cb: (ctx: EventContext, onRow: LobbySecrets, newRow: LobbySecrets) => void) => {
+  removeOnUpdate = (cb: (ctx: EventContext, onRow: LobbySecret, newRow: LobbySecret) => void) => {
     return this.tableCache.removeOnUpdate(cb);
   }}

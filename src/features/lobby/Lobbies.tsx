@@ -2,7 +2,6 @@ import { MenuCard } from "./Menu";
 import { Game } from "@/spacetimedb/client/module_bindings";
 import { useGameFacade } from "@/spacetimedb/client/facades/useGameFacade";
 import { useLobbyFacade } from "@/spacetimedb/client/facades/useLobbyFacade";
-import { PageLink } from "@/components/PageLink";
 
 function Lobbies() {
   const { games } = useGameFacade();
@@ -10,7 +9,7 @@ function Lobbies() {
 
   const join = (token: bigint) => {
     console.log("joining lobby: ", token);
-    //joinLobbyReducer(token)
+    joinLobbyReducer(token);
   };
 
   return (
