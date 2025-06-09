@@ -34,10 +34,11 @@ import { Guilds as __Guilds } from "./guilds_type";
 import { Locations as __Locations } from "./locations_type";
 
 export type Card = {
-  identity: Identity,
-  employee: __Guilds | undefined,
-  boss: Identity | undefined,
-  location: __Locations | undefined,
+  cardToken: bigint,
+  lobbyToken: bigint | undefined,
+  gameToken: bigint,
+  employee: __Guilds,
+  location: __Locations,
   isUsed: boolean,
 };
 
@@ -51,10 +52,11 @@ export namespace Card {
   */
   export function getTypeScriptAlgebraicType(): AlgebraicType {
     return AlgebraicType.createProductType([
-      new ProductTypeElement("identity", AlgebraicType.createIdentityType()),
-      new ProductTypeElement("employee", AlgebraicType.createOptionType(__Guilds.getTypeScriptAlgebraicType())),
-      new ProductTypeElement("boss", AlgebraicType.createOptionType(AlgebraicType.createIdentityType())),
-      new ProductTypeElement("location", AlgebraicType.createOptionType(__Locations.getTypeScriptAlgebraicType())),
+      new ProductTypeElement("cardToken", AlgebraicType.createU64Type()),
+      new ProductTypeElement("lobbyToken", AlgebraicType.createOptionType(AlgebraicType.createU64Type())),
+      new ProductTypeElement("gameToken", AlgebraicType.createU64Type()),
+      new ProductTypeElement("employee", __Guilds.getTypeScriptAlgebraicType()),
+      new ProductTypeElement("location", __Locations.getTypeScriptAlgebraicType()),
       new ProductTypeElement("isUsed", AlgebraicType.createBoolType()),
     ]);
   }

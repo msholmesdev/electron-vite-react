@@ -35,6 +35,7 @@ export type Game = {
   name: string | undefined,
   maxPlayers: number,
   isPrivate: boolean,
+  currentTurnPosition: number | undefined,
 };
 
 /**
@@ -51,6 +52,7 @@ export namespace Game {
       new ProductTypeElement("name", AlgebraicType.createOptionType(AlgebraicType.createStringType())),
       new ProductTypeElement("maxPlayers", AlgebraicType.createU8Type()),
       new ProductTypeElement("isPrivate", AlgebraicType.createBoolType()),
+      new ProductTypeElement("currentTurnPosition", AlgebraicType.createOptionType(AlgebraicType.createU8Type())),
     ]);
   }
 

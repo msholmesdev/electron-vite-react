@@ -16,8 +16,10 @@ public static partial class Module
         public byte Y;
     }
 
-    public static bool DidWin()
+    public static ulong? DidWin(ReducerContext ctx, ulong gameToken)
     {
-        return false;
+        var guilds = ctx.Db.guild.GameToken.Filter(gameToken);
+        
+        return null;
     }
 }

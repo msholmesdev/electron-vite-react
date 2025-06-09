@@ -38,38 +38,56 @@ import { ClientDisconnected } from "./client_disconnected_reducer.ts";
 export { ClientDisconnected };
 import { CloseLobby } from "./close_lobby_reducer.ts";
 export { CloseLobby };
+import { Farmer } from "./farmer_reducer.ts";
+export { Farmer };
+import { Gamer } from "./gamer_reducer.ts";
+export { Gamer };
+import { GoldDigger } from "./gold_digger_reducer.ts";
+export { GoldDigger };
+import { Intern } from "./intern_reducer.ts";
+export { Intern };
 import { JoinLobby } from "./join_lobby_reducer.ts";
 export { JoinLobby };
+import { Karen } from "./karen_reducer.ts";
+export { Karen };
+import { Lawyer } from "./lawyer_reducer.ts";
+export { Lawyer };
+import { Pirate } from "./pirate_reducer.ts";
+export { Pirate };
+import { Politician } from "./politician_reducer.ts";
+export { Politician };
 import { RemoveSelfFromLobby } from "./remove_self_from_lobby_reducer.ts";
 export { RemoveSelfFromLobby };
 import { ServerLog } from "./server_log_reducer.ts";
 export { ServerLog };
 import { StartLobby } from "./start_lobby_reducer.ts";
 export { StartLobby };
+import { TaxiDriver } from "./taxi_driver_reducer.ts";
+export { TaxiDriver };
 
 // Import and reexport all table handle types
-import { BossTableHandle } from "./boss_table.ts";
-export { BossTableHandle };
 import { CardTableHandle } from "./card_table.ts";
 export { CardTableHandle };
 import { GameTableHandle } from "./game_table.ts";
 export { GameTableHandle };
 import { GameSecretTableHandle } from "./game_secret_table.ts";
 export { GameSecretTableHandle };
+import { GuildTableHandle } from "./guild_table.ts";
+export { GuildTableHandle };
 import { LobbyTableHandle } from "./lobby_table.ts";
 export { LobbyTableHandle };
 import { LobbySecretsTableHandle } from "./lobby_secrets_table.ts";
 export { LobbySecretsTableHandle };
 
 // Import and reexport all types
-import { Boss } from "./boss_type.ts";
-export { Boss };
 import { Card } from "./card_type.ts";
 export { Card };
 import { Game } from "./game_type.ts";
 export { Game };
 import { GameSecret } from "./game_secret_type.ts";
 export { GameSecret };
+import { Guild } from "./guild_type.ts";
+export { Guild };
 import { Guilds } from "./guilds_type.ts";
 export { Guilds };
 import { Lobby } from "./lobby_type.ts";
@@ -81,15 +99,10 @@ export { Locations };
 
 const REMOTE_MODULE = {
   tables: {
-    boss: {
-      tableName: "boss",
-      rowType: Boss.getTypeScriptAlgebraicType(),
-      primaryKey: "identity",
-    },
     card: {
       tableName: "card",
       rowType: Card.getTypeScriptAlgebraicType(),
-      primaryKey: "identity",
+      primaryKey: "cardToken",
     },
     game: {
       tableName: "game",
@@ -100,6 +113,11 @@ const REMOTE_MODULE = {
       tableName: "game_secret",
       rowType: GameSecret.getTypeScriptAlgebraicType(),
       primaryKey: "gameToken",
+    },
+    guild: {
+      tableName: "guild",
+      rowType: Guild.getTypeScriptAlgebraicType(),
+      primaryKey: "guildToken",
     },
     lobby: {
       tableName: "lobby",
@@ -125,9 +143,41 @@ const REMOTE_MODULE = {
       reducerName: "CloseLobby",
       argsType: CloseLobby.getTypeScriptAlgebraicType(),
     },
+    Farmer: {
+      reducerName: "Farmer",
+      argsType: Farmer.getTypeScriptAlgebraicType(),
+    },
+    Gamer: {
+      reducerName: "Gamer",
+      argsType: Gamer.getTypeScriptAlgebraicType(),
+    },
+    GoldDigger: {
+      reducerName: "GoldDigger",
+      argsType: GoldDigger.getTypeScriptAlgebraicType(),
+    },
+    Intern: {
+      reducerName: "Intern",
+      argsType: Intern.getTypeScriptAlgebraicType(),
+    },
     JoinLobby: {
       reducerName: "JoinLobby",
       argsType: JoinLobby.getTypeScriptAlgebraicType(),
+    },
+    Karen: {
+      reducerName: "Karen",
+      argsType: Karen.getTypeScriptAlgebraicType(),
+    },
+    Lawyer: {
+      reducerName: "Lawyer",
+      argsType: Lawyer.getTypeScriptAlgebraicType(),
+    },
+    Pirate: {
+      reducerName: "Pirate",
+      argsType: Pirate.getTypeScriptAlgebraicType(),
+    },
+    Politician: {
+      reducerName: "Politician",
+      argsType: Politician.getTypeScriptAlgebraicType(),
     },
     RemoveSelfFromLobby: {
       reducerName: "RemoveSelfFromLobby",
@@ -140,6 +190,10 @@ const REMOTE_MODULE = {
     StartLobby: {
       reducerName: "StartLobby",
       argsType: StartLobby.getTypeScriptAlgebraicType(),
+    },
+    TaxiDriver: {
+      reducerName: "TaxiDriver",
+      argsType: TaxiDriver.getTypeScriptAlgebraicType(),
     },
   },
   // Constructors which are used by the DbConnectionImpl to
@@ -171,10 +225,19 @@ export type Reducer = never
 | { name: "ClientConnected", args: ClientConnected }
 | { name: "ClientDisconnected", args: ClientDisconnected }
 | { name: "CloseLobby", args: CloseLobby }
+| { name: "Farmer", args: Farmer }
+| { name: "Gamer", args: Gamer }
+| { name: "GoldDigger", args: GoldDigger }
+| { name: "Intern", args: Intern }
 | { name: "JoinLobby", args: JoinLobby }
+| { name: "Karen", args: Karen }
+| { name: "Lawyer", args: Lawyer }
+| { name: "Pirate", args: Pirate }
+| { name: "Politician", args: Politician }
 | { name: "RemoveSelfFromLobby", args: RemoveSelfFromLobby }
 | { name: "ServerLog", args: ServerLog }
 | { name: "StartLobby", args: StartLobby }
+| { name: "TaxiDriver", args: TaxiDriver }
 ;
 
 export class RemoteReducers {
@@ -212,6 +275,70 @@ export class RemoteReducers {
     this.connection.offReducer("CloseLobby", callback);
   }
 
+  farmer(cardToken: bigint, lobbyToken: bigint) {
+    const __args = { cardToken, lobbyToken };
+    let __writer = new BinaryWriter(1024);
+    Farmer.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("Farmer", __argsBuffer, this.setCallReducerFlags.farmerFlags);
+  }
+
+  onFarmer(callback: (ctx: ReducerEventContext, cardToken: bigint, lobbyToken: bigint) => void) {
+    this.connection.onReducer("Farmer", callback);
+  }
+
+  removeOnFarmer(callback: (ctx: ReducerEventContext, cardToken: bigint, lobbyToken: bigint) => void) {
+    this.connection.offReducer("Farmer", callback);
+  }
+
+  gamer(cardToken: bigint, lobbyToken: bigint, guildToken: bigint) {
+    const __args = { cardToken, lobbyToken, guildToken };
+    let __writer = new BinaryWriter(1024);
+    Gamer.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("Gamer", __argsBuffer, this.setCallReducerFlags.gamerFlags);
+  }
+
+  onGamer(callback: (ctx: ReducerEventContext, cardToken: bigint, lobbyToken: bigint, guildToken: bigint) => void) {
+    this.connection.onReducer("Gamer", callback);
+  }
+
+  removeOnGamer(callback: (ctx: ReducerEventContext, cardToken: bigint, lobbyToken: bigint, guildToken: bigint) => void) {
+    this.connection.offReducer("Gamer", callback);
+  }
+
+  goldDigger(cardToken: bigint, lobbyToken: bigint) {
+    const __args = { cardToken, lobbyToken };
+    let __writer = new BinaryWriter(1024);
+    GoldDigger.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("GoldDigger", __argsBuffer, this.setCallReducerFlags.goldDiggerFlags);
+  }
+
+  onGoldDigger(callback: (ctx: ReducerEventContext, cardToken: bigint, lobbyToken: bigint) => void) {
+    this.connection.onReducer("GoldDigger", callback);
+  }
+
+  removeOnGoldDigger(callback: (ctx: ReducerEventContext, cardToken: bigint, lobbyToken: bigint) => void) {
+    this.connection.offReducer("GoldDigger", callback);
+  }
+
+  intern(cardToken: bigint, cardToReactivateToken: bigint, lobbyToken: bigint) {
+    const __args = { cardToken, cardToReactivateToken, lobbyToken };
+    let __writer = new BinaryWriter(1024);
+    Intern.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("Intern", __argsBuffer, this.setCallReducerFlags.internFlags);
+  }
+
+  onIntern(callback: (ctx: ReducerEventContext, cardToken: bigint, cardToReactivateToken: bigint, lobbyToken: bigint) => void) {
+    this.connection.onReducer("Intern", callback);
+  }
+
+  removeOnIntern(callback: (ctx: ReducerEventContext, cardToken: bigint, cardToReactivateToken: bigint, lobbyToken: bigint) => void) {
+    this.connection.offReducer("Intern", callback);
+  }
+
   joinLobby(gameToken: bigint) {
     const __args = { gameToken };
     let __writer = new BinaryWriter(1024);
@@ -226,6 +353,70 @@ export class RemoteReducers {
 
   removeOnJoinLobby(callback: (ctx: ReducerEventContext, gameToken: bigint) => void) {
     this.connection.offReducer("JoinLobby", callback);
+  }
+
+  karen(cardToken: bigint, lobbyToken: bigint, guildToken: bigint) {
+    const __args = { cardToken, lobbyToken, guildToken };
+    let __writer = new BinaryWriter(1024);
+    Karen.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("Karen", __argsBuffer, this.setCallReducerFlags.karenFlags);
+  }
+
+  onKaren(callback: (ctx: ReducerEventContext, cardToken: bigint, lobbyToken: bigint, guildToken: bigint) => void) {
+    this.connection.onReducer("Karen", callback);
+  }
+
+  removeOnKaren(callback: (ctx: ReducerEventContext, cardToken: bigint, lobbyToken: bigint, guildToken: bigint) => void) {
+    this.connection.offReducer("Karen", callback);
+  }
+
+  lawyer(cardToken: bigint, lobbyToken: bigint, cardTokenFromResumeToCompany1: bigint, cardTokenFromResumeToCompany2: bigint) {
+    const __args = { cardToken, lobbyToken, cardTokenFromResumeToCompany1, cardTokenFromResumeToCompany2 };
+    let __writer = new BinaryWriter(1024);
+    Lawyer.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("Lawyer", __argsBuffer, this.setCallReducerFlags.lawyerFlags);
+  }
+
+  onLawyer(callback: (ctx: ReducerEventContext, cardToken: bigint, lobbyToken: bigint, cardTokenFromResumeToCompany1: bigint, cardTokenFromResumeToCompany2: bigint) => void) {
+    this.connection.onReducer("Lawyer", callback);
+  }
+
+  removeOnLawyer(callback: (ctx: ReducerEventContext, cardToken: bigint, lobbyToken: bigint, cardTokenFromResumeToCompany1: bigint, cardTokenFromResumeToCompany2: bigint) => void) {
+    this.connection.offReducer("Lawyer", callback);
+  }
+
+  pirate(yourCardToken: bigint, anotherCardToken: bigint, lobbyToken: bigint) {
+    const __args = { yourCardToken, anotherCardToken, lobbyToken };
+    let __writer = new BinaryWriter(1024);
+    Pirate.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("Pirate", __argsBuffer, this.setCallReducerFlags.pirateFlags);
+  }
+
+  onPirate(callback: (ctx: ReducerEventContext, yourCardToken: bigint, anotherCardToken: bigint, lobbyToken: bigint) => void) {
+    this.connection.onReducer("Pirate", callback);
+  }
+
+  removeOnPirate(callback: (ctx: ReducerEventContext, yourCardToken: bigint, anotherCardToken: bigint, lobbyToken: bigint) => void) {
+    this.connection.offReducer("Pirate", callback);
+  }
+
+  politician(playCardToken: bigint, resumeCardToken: bigint, lobbyToken: bigint, otherBossLobbyToken: bigint) {
+    const __args = { playCardToken, resumeCardToken, lobbyToken, otherBossLobbyToken };
+    let __writer = new BinaryWriter(1024);
+    Politician.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("Politician", __argsBuffer, this.setCallReducerFlags.politicianFlags);
+  }
+
+  onPolitician(callback: (ctx: ReducerEventContext, playCardToken: bigint, resumeCardToken: bigint, lobbyToken: bigint, otherBossLobbyToken: bigint) => void) {
+    this.connection.onReducer("Politician", callback);
+  }
+
+  removeOnPolitician(callback: (ctx: ReducerEventContext, playCardToken: bigint, resumeCardToken: bigint, lobbyToken: bigint, otherBossLobbyToken: bigint) => void) {
+    this.connection.offReducer("Politician", callback);
   }
 
   removeSelfFromLobby(gameToken: bigint) {
@@ -276,6 +467,22 @@ export class RemoteReducers {
     this.connection.offReducer("StartLobby", callback);
   }
 
+  taxiDriver(cardToken: bigint, lobbyToken: bigint, x1: number, x2: number) {
+    const __args = { cardToken, lobbyToken, x1, x2 };
+    let __writer = new BinaryWriter(1024);
+    TaxiDriver.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("TaxiDriver", __argsBuffer, this.setCallReducerFlags.taxiDriverFlags);
+  }
+
+  onTaxiDriver(callback: (ctx: ReducerEventContext, cardToken: bigint, lobbyToken: bigint, x1: number, x2: number) => void) {
+    this.connection.onReducer("TaxiDriver", callback);
+  }
+
+  removeOnTaxiDriver(callback: (ctx: ReducerEventContext, cardToken: bigint, lobbyToken: bigint, x1: number, x2: number) => void) {
+    this.connection.offReducer("TaxiDriver", callback);
+  }
+
 }
 
 export class SetReducerFlags {
@@ -284,9 +491,49 @@ export class SetReducerFlags {
     this.closeLobbyFlags = flags;
   }
 
+  farmerFlags: CallReducerFlags = 'FullUpdate';
+  farmer(flags: CallReducerFlags) {
+    this.farmerFlags = flags;
+  }
+
+  gamerFlags: CallReducerFlags = 'FullUpdate';
+  gamer(flags: CallReducerFlags) {
+    this.gamerFlags = flags;
+  }
+
+  goldDiggerFlags: CallReducerFlags = 'FullUpdate';
+  goldDigger(flags: CallReducerFlags) {
+    this.goldDiggerFlags = flags;
+  }
+
+  internFlags: CallReducerFlags = 'FullUpdate';
+  intern(flags: CallReducerFlags) {
+    this.internFlags = flags;
+  }
+
   joinLobbyFlags: CallReducerFlags = 'FullUpdate';
   joinLobby(flags: CallReducerFlags) {
     this.joinLobbyFlags = flags;
+  }
+
+  karenFlags: CallReducerFlags = 'FullUpdate';
+  karen(flags: CallReducerFlags) {
+    this.karenFlags = flags;
+  }
+
+  lawyerFlags: CallReducerFlags = 'FullUpdate';
+  lawyer(flags: CallReducerFlags) {
+    this.lawyerFlags = flags;
+  }
+
+  pirateFlags: CallReducerFlags = 'FullUpdate';
+  pirate(flags: CallReducerFlags) {
+    this.pirateFlags = flags;
+  }
+
+  politicianFlags: CallReducerFlags = 'FullUpdate';
+  politician(flags: CallReducerFlags) {
+    this.politicianFlags = flags;
   }
 
   removeSelfFromLobbyFlags: CallReducerFlags = 'FullUpdate';
@@ -304,14 +551,15 @@ export class SetReducerFlags {
     this.startLobbyFlags = flags;
   }
 
+  taxiDriverFlags: CallReducerFlags = 'FullUpdate';
+  taxiDriver(flags: CallReducerFlags) {
+    this.taxiDriverFlags = flags;
+  }
+
 }
 
 export class RemoteTables {
   constructor(private connection: DbConnectionImpl) {}
-
-  get boss(): BossTableHandle {
-    return new BossTableHandle(this.connection.clientCache.getOrCreateTable<Boss>(REMOTE_MODULE.tables.boss));
-  }
 
   get card(): CardTableHandle {
     return new CardTableHandle(this.connection.clientCache.getOrCreateTable<Card>(REMOTE_MODULE.tables.card));
@@ -323,6 +571,10 @@ export class RemoteTables {
 
   get gameSecret(): GameSecretTableHandle {
     return new GameSecretTableHandle(this.connection.clientCache.getOrCreateTable<GameSecret>(REMOTE_MODULE.tables.game_secret));
+  }
+
+  get guild(): GuildTableHandle {
+    return new GuildTableHandle(this.connection.clientCache.getOrCreateTable<Guild>(REMOTE_MODULE.tables.guild));
   }
 
   get lobby(): LobbyTableHandle {

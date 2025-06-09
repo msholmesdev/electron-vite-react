@@ -61,22 +61,22 @@ export class CardTableHandle {
     return this.tableCache.iter();
   }
   /**
-   * Access to the `identity` unique index on the table `card`,
+   * Access to the `cardToken` unique index on the table `card`,
    * which allows point queries on the field of the same name
-   * via the [`CardIdentityUnique.find`] method.
+   * via the [`CardCardTokenUnique.find`] method.
    *
    * Users are encouraged not to explicitly reference this type,
    * but to directly chain method calls,
-   * like `ctx.db.card.identity().find(...)`.
+   * like `ctx.db.card.cardToken().find(...)`.
    *
-   * Get a handle on the `identity` unique index on the table `card`.
+   * Get a handle on the `cardToken` unique index on the table `card`.
    */
-  identity = {
-    // Find the subscribed row whose `identity` column value is equal to `col_val`,
+  cardToken = {
+    // Find the subscribed row whose `cardToken` column value is equal to `col_val`,
     // if such a row is present in the client cache.
-    find: (col_val: Identity): Card | undefined => {
+    find: (col_val: bigint): Card | undefined => {
       for (let row of this.tableCache.iter()) {
-        if (deepEqual(row.identity, col_val)) {
+        if (deepEqual(row.cardToken, col_val)) {
           return row;
         }
       }

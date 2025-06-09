@@ -34,7 +34,6 @@ export type GameSecret = {
   gameToken: bigint,
   host: Identity,
   startTime: Timestamp,
-  currentTurnPosition: number | undefined,
   isActive: boolean,
   hasStarted: boolean,
 };
@@ -52,7 +51,6 @@ export namespace GameSecret {
       new ProductTypeElement("gameToken", AlgebraicType.createU64Type()),
       new ProductTypeElement("host", AlgebraicType.createIdentityType()),
       new ProductTypeElement("startTime", AlgebraicType.createTimestampType()),
-      new ProductTypeElement("currentTurnPosition", AlgebraicType.createOptionType(AlgebraicType.createU8Type())),
       new ProductTypeElement("isActive", AlgebraicType.createBoolType()),
       new ProductTypeElement("hasStarted", AlgebraicType.createBoolType()),
     ]);

@@ -30,44 +30,38 @@ import {
   Timestamp,
   deepEqual,
 } from "@clockworklabs/spacetimedb-sdk";
-import { Guilds as __Guilds } from "./guilds_type";
 
-export type Lobby = {
+export type Politician = {
+  playCardToken: bigint,
+  resumeCardToken: bigint,
   lobbyToken: bigint,
-  gameToken: bigint,
-  isConnected: boolean,
-  isReady: boolean,
-  representative: __Guilds | undefined,
-  turnPosition: number | undefined,
+  otherBossLobbyToken: bigint,
 };
 
 /**
  * A namespace for generated helper functions.
  */
-export namespace Lobby {
+export namespace Politician {
   /**
   * A function which returns this type represented as an AlgebraicType.
   * This function is derived from the AlgebraicType used to generate this type.
   */
   export function getTypeScriptAlgebraicType(): AlgebraicType {
     return AlgebraicType.createProductType([
+      new ProductTypeElement("playCardToken", AlgebraicType.createU64Type()),
+      new ProductTypeElement("resumeCardToken", AlgebraicType.createU64Type()),
       new ProductTypeElement("lobbyToken", AlgebraicType.createU64Type()),
-      new ProductTypeElement("gameToken", AlgebraicType.createU64Type()),
-      new ProductTypeElement("isConnected", AlgebraicType.createBoolType()),
-      new ProductTypeElement("isReady", AlgebraicType.createBoolType()),
-      new ProductTypeElement("representative", AlgebraicType.createOptionType(__Guilds.getTypeScriptAlgebraicType())),
-      new ProductTypeElement("turnPosition", AlgebraicType.createOptionType(AlgebraicType.createU8Type())),
+      new ProductTypeElement("otherBossLobbyToken", AlgebraicType.createU64Type()),
     ]);
   }
 
-  export function serialize(writer: BinaryWriter, value: Lobby): void {
-    Lobby.getTypeScriptAlgebraicType().serialize(writer, value);
+  export function serialize(writer: BinaryWriter, value: Politician): void {
+    Politician.getTypeScriptAlgebraicType().serialize(writer, value);
   }
 
-  export function deserialize(reader: BinaryReader): Lobby {
-    return Lobby.getTypeScriptAlgebraicType().deserialize(reader);
+  export function deserialize(reader: BinaryReader): Politician {
+    return Politician.getTypeScriptAlgebraicType().deserialize(reader);
   }
 
 }
-
 

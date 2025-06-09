@@ -30,25 +30,25 @@ import {
   Timestamp,
   deepEqual,
 } from "@clockworklabs/spacetimedb-sdk";
-import { Lobby } from "./lobby_type";
+import { Guild } from "./guild_type";
 import { Guilds as __Guilds } from "./guilds_type";
 
 import { EventContext, Reducer, RemoteReducers, RemoteTables } from ".";
 
 /**
- * Table handle for the table `lobby`.
+ * Table handle for the table `guild`.
  *
- * Obtain a handle from the [`lobby`] property on [`RemoteTables`],
- * like `ctx.db.lobby`.
+ * Obtain a handle from the [`guild`] property on [`RemoteTables`],
+ * like `ctx.db.guild`.
  *
  * Users are encouraged not to explicitly reference this type,
  * but to directly chain method calls,
- * like `ctx.db.lobby.on_insert(...)`.
+ * like `ctx.db.guild.on_insert(...)`.
  */
-export class LobbyTableHandle {
-  tableCache: TableCache<Lobby>;
+export class GuildTableHandle {
+  tableCache: TableCache<Guild>;
 
-  constructor(tableCache: TableCache<Lobby>) {
+  constructor(tableCache: TableCache<Guild>) {
     this.tableCache = tableCache;
   }
 
@@ -56,53 +56,53 @@ export class LobbyTableHandle {
     return this.tableCache.count();
   }
 
-  iter(): Iterable<Lobby> {
+  iter(): Iterable<Guild> {
     return this.tableCache.iter();
   }
   /**
-   * Access to the `lobbyToken` unique index on the table `lobby`,
+   * Access to the `guildToken` unique index on the table `guild`,
    * which allows point queries on the field of the same name
-   * via the [`LobbyLobbyTokenUnique.find`] method.
+   * via the [`GuildGuildTokenUnique.find`] method.
    *
    * Users are encouraged not to explicitly reference this type,
    * but to directly chain method calls,
-   * like `ctx.db.lobby.lobbyToken().find(...)`.
+   * like `ctx.db.guild.guildToken().find(...)`.
    *
-   * Get a handle on the `lobbyToken` unique index on the table `lobby`.
+   * Get a handle on the `guildToken` unique index on the table `guild`.
    */
-  lobbyToken = {
-    // Find the subscribed row whose `lobbyToken` column value is equal to `col_val`,
+  guildToken = {
+    // Find the subscribed row whose `guildToken` column value is equal to `col_val`,
     // if such a row is present in the client cache.
-    find: (col_val: bigint): Lobby | undefined => {
+    find: (col_val: bigint): Guild | undefined => {
       for (let row of this.tableCache.iter()) {
-        if (deepEqual(row.lobbyToken, col_val)) {
+        if (deepEqual(row.guildToken, col_val)) {
           return row;
         }
       }
     },
   };
 
-  onInsert = (cb: (ctx: EventContext, row: Lobby) => void) => {
+  onInsert = (cb: (ctx: EventContext, row: Guild) => void) => {
     return this.tableCache.onInsert(cb);
   }
 
-  removeOnInsert = (cb: (ctx: EventContext, row: Lobby) => void) => {
+  removeOnInsert = (cb: (ctx: EventContext, row: Guild) => void) => {
     return this.tableCache.removeOnInsert(cb);
   }
 
-  onDelete = (cb: (ctx: EventContext, row: Lobby) => void) => {
+  onDelete = (cb: (ctx: EventContext, row: Guild) => void) => {
     return this.tableCache.onDelete(cb);
   }
 
-  removeOnDelete = (cb: (ctx: EventContext, row: Lobby) => void) => {
+  removeOnDelete = (cb: (ctx: EventContext, row: Guild) => void) => {
     return this.tableCache.removeOnDelete(cb);
   }
 
   // Updates are only defined for tables with primary keys.
-  onUpdate = (cb: (ctx: EventContext, oldRow: Lobby, newRow: Lobby) => void) => {
+  onUpdate = (cb: (ctx: EventContext, oldRow: Guild, newRow: Guild) => void) => {
     return this.tableCache.onUpdate(cb);
   }
 
-  removeOnUpdate = (cb: (ctx: EventContext, onRow: Lobby, newRow: Lobby) => void) => {
+  removeOnUpdate = (cb: (ctx: EventContext, onRow: Guild, newRow: Guild) => void) => {
     return this.tableCache.removeOnUpdate(cb);
   }}
