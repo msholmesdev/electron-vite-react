@@ -14,7 +14,7 @@ function Lobby() {
     (lob) =>
       lob.isConnected == true && connectedLobby?.gameToken == lob.gameToken
   );
-  const { isHost } = useGameFacade();
+  const { isHost, connectedGame } = useGameFacade();
 
   const close = () => {
     if (connectedLobby) {
@@ -36,6 +36,12 @@ function Lobby() {
     }
     navigate("/menu");
   }, [connectedLobby]);
+
+  useEffect(() => {
+    if (connectedGame && connectedGame.hasStarted) {
+      navigate("/game");
+    }
+  }, [connectedGame]);
 
   return (
     <MenuCard>

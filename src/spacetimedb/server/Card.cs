@@ -8,8 +8,18 @@ public static partial class Module
     [ClientVisibilityFilter]
     public static readonly Filter CARD_FILTER = new Filter.Sql(
     "SELECT * FROM card WHERE Location ! Unemployed"
+
+    
 );
 */
+
+/*
+    [ClientVisibilityFilter]
+    public static readonly Filter CARDS_IN_GAME = new Filter.Sql(
+        "SELECT card.* FROM card JOIN lobby_secret WHERE lobby_secret.Player = :sender"
+    );
+    */
+
     [Table(Name = "card", Public = true)]
     public partial class Card
     {

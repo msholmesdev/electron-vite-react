@@ -20,7 +20,7 @@ public static partial class Module
             return false;
         }
 
-        if (lobbySecret.Player == ctx.Sender && lobby.turnPosition == game.CurrentTurnPosition)
+        if (lobbySecret.Player == ctx.Sender && lobby.TurnPosition == game.CurrentTurnPosition)
         {
             return true;
         }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useGameStore } from "./stores/useGameStore";
 import { useConnectionFacade } from "./useConnectionFacade";
 import { useLobbyFacade } from "./useLobbyFacade";
@@ -8,6 +8,9 @@ export const useGameFacade = () => {
   const addGame = useGameStore((state) => state.addGame);
   const gamesSecret = useGameStore((state) => state.gamesSecret);
   const addGameSecret = useGameStore((state) => state.addGameSecret);
+  const removeGame = useGameStore((state) => state.removeGame);
+  const removeGameSecret = useGameStore((state) => state.removeGameSecret);
+  const updateGame = useGameStore((state) => state.updateGame);
   const { conn } = useConnectionFacade();
   const { connectedLobby } = useLobbyFacade();
 
@@ -25,6 +28,23 @@ export const useGameFacade = () => {
 
     return !!game?.gameToken;
   }, [connectedLobby, gamesSecret]);
+
+  const connectedGame = useMemo(() => {
+    if (!connectedLobby) return undefined;
+
+    const game = games.find(
+      (game) => game.gameToken === connectedLobby.gameToken
+    );
+
+    return game;
+  }, [connectedLobby, games]);
+
+  const isTurn = useMemo(() => {
+    if (!connectedLobby) return false;
+    if (!connectedGame) return false;
+
+    return connectedLobby.turnPosition === connectedGame.currentTurnPosition;
+  }, [connectedGame, connectedLobby]);
 
   const hostGame = (
     lobbyName: string,
@@ -55,6 +75,11 @@ export const useGameFacade = () => {
     gamesSecret,
     addGameSecret,
     hostGame,
+    removeGame,
+    updateGame,
+    removeGameSecret,
+    isTurn,
+    connectedGame,
     isHost,
     PLAYER_MIN,
     PLAYER_MAX,

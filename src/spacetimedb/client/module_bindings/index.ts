@@ -56,10 +56,14 @@ import { Pirate } from "./pirate_reducer.ts";
 export { Pirate };
 import { Politician } from "./politician_reducer.ts";
 export { Politician };
+import { ReadyUpInLobby } from "./ready_up_in_lobby_reducer.ts";
+export { ReadyUpInLobby };
 import { RemoveSelfFromLobby } from "./remove_self_from_lobby_reducer.ts";
 export { RemoveSelfFromLobby };
 import { ServerLog } from "./server_log_reducer.ts";
 export { ServerLog };
+import { StartGame } from "./start_game_reducer.ts";
+export { StartGame };
 import { StartLobby } from "./start_lobby_reducer.ts";
 export { StartLobby };
 import { TaxiDriver } from "./taxi_driver_reducer.ts";
@@ -96,6 +100,8 @@ import { LobbySecret } from "./lobby_secret_type.ts";
 export { LobbySecret };
 import { Locations } from "./locations_type.ts";
 export { Locations };
+import { Turn } from "./turn_type.ts";
+export { Turn };
 
 const REMOTE_MODULE = {
   tables: {
@@ -179,6 +185,10 @@ const REMOTE_MODULE = {
       reducerName: "Politician",
       argsType: Politician.getTypeScriptAlgebraicType(),
     },
+    ReadyUpInLobby: {
+      reducerName: "ReadyUpInLobby",
+      argsType: ReadyUpInLobby.getTypeScriptAlgebraicType(),
+    },
     RemoveSelfFromLobby: {
       reducerName: "RemoveSelfFromLobby",
       argsType: RemoveSelfFromLobby.getTypeScriptAlgebraicType(),
@@ -186,6 +196,10 @@ const REMOTE_MODULE = {
     ServerLog: {
       reducerName: "ServerLog",
       argsType: ServerLog.getTypeScriptAlgebraicType(),
+    },
+    StartGame: {
+      reducerName: "StartGame",
+      argsType: StartGame.getTypeScriptAlgebraicType(),
     },
     StartLobby: {
       reducerName: "StartLobby",
@@ -234,8 +248,10 @@ export type Reducer = never
 | { name: "Lawyer", args: Lawyer }
 | { name: "Pirate", args: Pirate }
 | { name: "Politician", args: Politician }
+| { name: "ReadyUpInLobby", args: ReadyUpInLobby }
 | { name: "RemoveSelfFromLobby", args: RemoveSelfFromLobby }
 | { name: "ServerLog", args: ServerLog }
+| { name: "StartGame", args: StartGame }
 | { name: "StartLobby", args: StartLobby }
 | { name: "TaxiDriver", args: TaxiDriver }
 ;
@@ -419,6 +435,22 @@ export class RemoteReducers {
     this.connection.offReducer("Politician", callback);
   }
 
+  readyUpInLobby(gameToken: bigint) {
+    const __args = { gameToken };
+    let __writer = new BinaryWriter(1024);
+    ReadyUpInLobby.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("ReadyUpInLobby", __argsBuffer, this.setCallReducerFlags.readyUpInLobbyFlags);
+  }
+
+  onReadyUpInLobby(callback: (ctx: ReducerEventContext, gameToken: bigint) => void) {
+    this.connection.onReducer("ReadyUpInLobby", callback);
+  }
+
+  removeOnReadyUpInLobby(callback: (ctx: ReducerEventContext, gameToken: bigint) => void) {
+    this.connection.offReducer("ReadyUpInLobby", callback);
+  }
+
   removeSelfFromLobby(gameToken: bigint) {
     const __args = { gameToken };
     let __writer = new BinaryWriter(1024);
@@ -449,6 +481,22 @@ export class RemoteReducers {
 
   removeOnServerLog(callback: (ctx: ReducerEventContext, logMessage: string) => void) {
     this.connection.offReducer("ServerLog", callback);
+  }
+
+  startGame(gameToken: bigint) {
+    const __args = { gameToken };
+    let __writer = new BinaryWriter(1024);
+    StartGame.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("StartGame", __argsBuffer, this.setCallReducerFlags.startGameFlags);
+  }
+
+  onStartGame(callback: (ctx: ReducerEventContext, gameToken: bigint) => void) {
+    this.connection.onReducer("StartGame", callback);
+  }
+
+  removeOnStartGame(callback: (ctx: ReducerEventContext, gameToken: bigint) => void) {
+    this.connection.offReducer("StartGame", callback);
   }
 
   startLobby(name: string, maxPlayers: number, isPrivate: boolean | undefined) {
@@ -536,6 +584,11 @@ export class SetReducerFlags {
     this.politicianFlags = flags;
   }
 
+  readyUpInLobbyFlags: CallReducerFlags = 'FullUpdate';
+  readyUpInLobby(flags: CallReducerFlags) {
+    this.readyUpInLobbyFlags = flags;
+  }
+
   removeSelfFromLobbyFlags: CallReducerFlags = 'FullUpdate';
   removeSelfFromLobby(flags: CallReducerFlags) {
     this.removeSelfFromLobbyFlags = flags;
@@ -544,6 +597,11 @@ export class SetReducerFlags {
   serverLogFlags: CallReducerFlags = 'FullUpdate';
   serverLog(flags: CallReducerFlags) {
     this.serverLogFlags = flags;
+  }
+
+  startGameFlags: CallReducerFlags = 'FullUpdate';
+  startGame(flags: CallReducerFlags) {
+    this.startGameFlags = flags;
   }
 
   startLobbyFlags: CallReducerFlags = 'FullUpdate';

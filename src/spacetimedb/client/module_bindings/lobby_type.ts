@@ -31,6 +31,7 @@ import {
   deepEqual,
 } from "@clockworklabs/spacetimedb-sdk";
 import { Guilds as __Guilds } from "./guilds_type";
+import { Turn as __Turn } from "./turn_type";
 
 export type Lobby = {
   lobbyToken: bigint,
@@ -39,6 +40,7 @@ export type Lobby = {
   isReady: boolean,
   representative: __Guilds | undefined,
   turnPosition: number | undefined,
+  turnType: __Turn | undefined,
 };
 
 /**
@@ -57,6 +59,7 @@ export namespace Lobby {
       new ProductTypeElement("isReady", AlgebraicType.createBoolType()),
       new ProductTypeElement("representative", AlgebraicType.createOptionType(__Guilds.getTypeScriptAlgebraicType())),
       new ProductTypeElement("turnPosition", AlgebraicType.createOptionType(AlgebraicType.createU8Type())),
+      new ProductTypeElement("turnType", AlgebraicType.createOptionType(__Turn.getTypeScriptAlgebraicType())),
     ]);
   }
 

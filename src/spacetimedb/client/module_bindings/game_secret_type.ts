@@ -35,7 +35,6 @@ export type GameSecret = {
   host: Identity,
   startTime: Timestamp,
   isActive: boolean,
-  hasStarted: boolean,
 };
 
 /**
@@ -52,7 +51,6 @@ export namespace GameSecret {
       new ProductTypeElement("host", AlgebraicType.createIdentityType()),
       new ProductTypeElement("startTime", AlgebraicType.createTimestampType()),
       new ProductTypeElement("isActive", AlgebraicType.createBoolType()),
-      new ProductTypeElement("hasStarted", AlgebraicType.createBoolType()),
     ]);
   }
 

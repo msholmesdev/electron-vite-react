@@ -13,6 +13,7 @@ public static partial class Module
         public byte MaxPlayers;
         public bool IsPrivate = false;
         public byte? CurrentTurnPosition;
+        public bool HasStarted = false;
     }
 
     
@@ -30,7 +31,6 @@ public static partial class Module
         public Identity Host;
         public Timestamp StartTime;
         public bool IsActive = true;
-        public bool HasStarted = false;
     }
 
     [Table(Name = "lobby", Public = true)]
@@ -43,7 +43,8 @@ public static partial class Module
         public bool IsConnected;
         public bool IsReady = false;
         public Guilds? Representative;
-        public byte? turnPosition;
+        public byte? TurnPosition;
+        public Turn? TurnType = null;
     }
 
     [ClientVisibilityFilter]
@@ -61,6 +62,65 @@ public static partial class Module
         [SpacetimeDB.Index.BTree]
         public ulong GameToken;
         public bool isBanned = false;
+    }
+
+    [Reducer]
+    public static void StartGame(ReducerContext ctx, ulong gameToken)
+    {
+        ReadyUpInLobby(ctx, gameToken);
+
+        var game = ctx.Db.game.GameToken.Find(gameToken);
+        if (game is null)
+        {
+            return;
+        }
+
+        var playersInLobby = ctx.Db.lobby.GameToken.Filter(gameToken).ToList();
+        if (playersInLobby is null || playersInLobby.Count <= 1)
+        {
+            return;
+        }
+
+        foreach (var player in playersInLobby)
+        {
+            if (player.IsReady == false)
+            {
+                return;
+            }
+        }
+
+        var availableGuilds = Enum.GetValues(typeof(Guilds)).Cast<Guilds>().ToList();
+        var random = new Random();
+        availableGuilds = availableGuilds.OrderBy(_ => random.Next()).ToList();
+
+        var shuffledPlayers = playersInLobby.OrderBy(_ => random.Next()).ToList();
+
+        for (int i = 0; i < shuffledPlayers.Count; i++)
+        {
+            var player = shuffledPlayers[i];
+            player.Representative = availableGuilds[i];
+            player.TurnPosition = (byte)i;
+        }
+
+        game.CurrentTurnPosition = (byte)random.Next(shuffledPlayers.Count);
+        game.HasStarted = true;
+        InitializeCards(ctx, gameToken);
+    }
+
+    [Reducer]
+    public static void ReadyUpInLobby(ReducerContext ctx, ulong gameToken)
+    {
+        var playerSecretLobbies = ctx.Db.lobby_secret.GameToken
+                                    .Filter(gameToken).Where(Lobby => Lobby.Player == ctx.Sender);
+        var playerSecretLobby = playerSecretLobbies.First();
+        if (playerSecretLobby is not null)
+        {
+            var playerLobby = ctx.Db.lobby.LobbyToken.Find(playerSecretLobby.LobbyToken);
+            if (playerLobby is not null)
+            {
+                playerLobby.IsReady = true;
+            }
+        }
     }
 
     [Reducer]

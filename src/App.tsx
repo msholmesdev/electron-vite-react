@@ -9,14 +9,15 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useGame } from "./spacetimedb/client/hooks/useGame";
 import { useLobby } from "./spacetimedb/client/hooks/useLobby";
 import { Lobby } from "./features/lobby/Lobby";
-
-const Game = () => <h2>Game</h2>;
+import { Game } from "./features/game/Game";
+import { useCard } from "./spacetimedb/client/hooks/useCard";
 
 function App() {
   const { conn, connected, identity } = useConnect();
   const { setConnection, setConnected, setIdentity } = useConnectionFacade();
   useGame();
   useLobby();
+  useCard();
 
   useEffect(() => {
     setConnection(conn);

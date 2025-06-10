@@ -24,6 +24,14 @@ public static partial class Module
         Resume
     }
 
+    [Type]
+    public enum Turn
+    {
+        Interview,
+        Hire,
+        Manage
+    }
+
     /// Takes a name and checks if it's acceptable as a user's name.
     private static string ValidateName(string name)
     {
