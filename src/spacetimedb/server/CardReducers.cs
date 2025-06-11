@@ -40,6 +40,7 @@ public static partial class Module
 
         anotherCard.LobbyToken = lobbyToken;
         anotherCard.Location = Locations.Resume;
+        UpdateCard(ctx, anotherCard);
         UseAndUpdateCard(ctx, validCard);
     }
 
@@ -79,7 +80,9 @@ public static partial class Module
         foreach (var card in selectedCards)
         {
             card.LobbyToken = lobbyToken;
+            UpdateCard(ctx, card);
         }
+        UpdateCard(ctx, validResumeCard);
         UseAndUpdateCard(ctx, validCard);
     }
 
@@ -105,10 +108,10 @@ public static partial class Module
             return;
         }
 
-        // Get up to 2 cards
         var selectedCard = otherBossCardsInResume.First();
         selectedCard.LobbyToken = lobbyToken;
         selectedCard.Location = Locations.Company;
+        UpdateCard(ctx, selectedCard);
         UseAndUpdateCard(ctx, validCard);
     }
 
@@ -133,6 +136,7 @@ public static partial class Module
         }
 
         cardToReactivate.isUsed = false;
+        UpdateCard(ctx, cardToReactivate);
         UseAndUpdateCard(ctx, validCard);
     }
 

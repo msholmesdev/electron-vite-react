@@ -29,6 +29,8 @@ public static partial class Module
 
         guildAbove.Y -= 1;
         guild.Y += 1;
+        UpdateGuild(ctx, guildAbove);
+        UpdateGuild(ctx, guild);
 
         return true;
     }
@@ -61,6 +63,9 @@ public static partial class Module
         guildBelow.Y += 1;
         guild.Y -= 1;
 
+        UpdateGuild(ctx, guildBelow);
+        UpdateGuild(ctx, guild);
+
         return true;
     }
 
@@ -83,6 +88,8 @@ public static partial class Module
 
         minGuildInX1.X = x2;
         minGuildInX1.Y = --minGuildValueInX2;
+
+        UpdateGuild(ctx, minGuildInX1);
 
         return true;
     }

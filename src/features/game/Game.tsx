@@ -1,6 +1,7 @@
 import { useCardFacade } from "@/spacetimedb/client/facades/useCardFacade";
 import { useGameFacade } from "@/spacetimedb/client/facades/useGameFacade";
 import { useEffect } from "react";
+import { ChooseTurnOption } from "./ChooseTurnType";
 
 const Game = () => {
   const { cards } = useCardFacade();
@@ -10,7 +11,12 @@ const Game = () => {
       console.log("cards", cards);
     }
   }, [cards]);
-  return <div>GAME HERE</div>;
+  return (
+    <div>
+      <div>GAME HERE</div>
+      <ChooseTurnOption />
+    </div>
+  );
 };
 
 export { Game };

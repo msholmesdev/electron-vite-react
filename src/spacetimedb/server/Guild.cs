@@ -19,7 +19,12 @@ public static partial class Module
     public static ulong? DidWin(ReducerContext ctx, ulong gameToken)
     {
         var guilds = ctx.Db.guild.GameToken.Filter(gameToken);
-        
+
         return null;
+    }
+    
+        public static void UpdateGuild(ReducerContext ctx, Guild guild)
+    {
+        ctx.Db.guild.GuildToken.Update(guild);
     }
 }

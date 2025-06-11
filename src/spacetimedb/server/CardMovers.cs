@@ -42,6 +42,7 @@ public static partial class Module
             {
                 card.LobbyToken = lobbyToken;
                 card.Location = location;
+                UpdateCard(ctx, card);
             }
 
             cardsList.RemoveAt(randomIndex);
@@ -54,6 +55,7 @@ public static partial class Module
         if (card is not null)
         {
             card.Location = Locations.Company;
+            UpdateCard(ctx, card);
         }
     }
 
@@ -100,5 +102,8 @@ public static partial class Module
         yourCard.LobbyToken = anotherLobbyToken;
         card1Valid.LobbyToken = yourLobbyToken;
         card2Valid.LobbyToken = yourLobbyToken;
+        UpdateCard(ctx, yourCard);
+        UpdateCard(ctx, card1Valid);
+        UpdateCard(ctx, card2Valid);
     }
 }

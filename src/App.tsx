@@ -26,7 +26,7 @@ function App() {
   }, [conn, connected, identity]);
 
   return (
-    <Container className="h-screen">
+    <Container>
       <Router>
         <Routes>
           <Route path="/menu" element={<Menu />} />

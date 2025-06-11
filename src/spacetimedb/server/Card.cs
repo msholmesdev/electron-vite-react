@@ -1,17 +1,13 @@
 using SpacetimeDB;
 
-//#pragma warning disable STDB_UNSTABLE
+#pragma warning disable STDB_UNSTABLE
 public static partial class Module
 {
 
-    /*
     [ClientVisibilityFilter]
     public static readonly Filter CARD_FILTER = new Filter.Sql(
-    "SELECT * FROM card WHERE Location ! Unemployed"
-
-    
-);
-*/
+        "SELECT * FROM card WHERE Location != Unemployed"
+    );
 
     /*
         [ClientVisibilityFilter]
@@ -52,11 +48,5 @@ public static partial class Module
                );
             }
         }
-    }
-
-    public static void UseAndUpdateCard(ReducerContext ctx, Card card)
-    {
-        card.isUsed = true;
-        ctx.Db.card.CardToken.Update(card);
     }
 }

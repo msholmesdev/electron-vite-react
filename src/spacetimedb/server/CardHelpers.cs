@@ -34,4 +34,15 @@ public static partial class Module
 
         return lobbySecret.Player;
     }
+
+        public static void UseAndUpdateCard(ReducerContext ctx, Card card)
+    {
+        card.isUsed = true;
+        UpdateCard(ctx, card);
+    }
+
+    public static void UpdateCard(ReducerContext ctx, Card card)
+    {
+        ctx.Db.card.CardToken.Update(card);
+    }
 }

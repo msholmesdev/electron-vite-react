@@ -11,7 +11,7 @@ const Overlay = ({
     return;
   }
   return (
-    <div className="h-screen w-screen flex items-center justify-center bg-amber-200/5">
+    <div className="h-full w-full flex items-center justify-center bg-amber-200/5">
       {children}
     </div>
   );

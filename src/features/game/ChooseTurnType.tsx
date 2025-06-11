@@ -63,7 +63,7 @@ const TurnOption = ({
   return (
     <button
       onClick={callback}
-      className="w-80 h-120 flex flex-col justify-between bg-amber-100 border-r-amber-200 rounded-2xl"
+      className="hover:border-amber-300 w-80 h-120 flex flex-col items-center  py-5 justify-between bg-amber-600/80 border-8 border-amber-100/50 rounded-2xl"
     >
       <div className="text-3xl">{title}</div>
       <div>IMG HERE</div>
