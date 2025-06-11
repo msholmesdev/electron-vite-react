@@ -39,6 +39,7 @@ function useGame() {
       _oldGame: Game,
       newGame: Game
     ) => {
+      console.log("updating game", newGame);
       updateGame(newGame);
     };
     conn.db.game.onUpdate(onUpdateGame);
@@ -46,6 +47,7 @@ function useGame() {
     return () => {
       conn.db.game.removeOnInsert(onInsertGame);
       conn.db.gameSecret.removeOnInsert(onInsertGameSecret);
+      conn.db.game.removeOnUpdate(onUpdateGame);
     };
   }, [conn]);
 }

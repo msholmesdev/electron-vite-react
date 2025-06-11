@@ -32,7 +32,7 @@ import {
 } from "@clockworklabs/spacetimedb-sdk";
 
 export type ReadyUpInLobby = {
-  gameToken: bigint,
+  lobbyToken: bigint,
 };
 
 /**
@@ -45,7 +45,7 @@ export namespace ReadyUpInLobby {
   */
   export function getTypeScriptAlgebraicType(): AlgebraicType {
     return AlgebraicType.createProductType([
-      new ProductTypeElement("gameToken", AlgebraicType.createU64Type()),
+      new ProductTypeElement("lobbyToken", AlgebraicType.createU64Type()),
     ]);
   }
 

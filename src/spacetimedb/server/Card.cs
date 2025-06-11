@@ -13,12 +13,12 @@ public static partial class Module
 );
 */
 
-/*
-    [ClientVisibilityFilter]
-    public static readonly Filter CARDS_IN_GAME = new Filter.Sql(
-        "SELECT card.* FROM card JOIN lobby_secret WHERE lobby_secret.Player = :sender"
-    );
-    */
+    /*
+        [ClientVisibilityFilter]
+        public static readonly Filter CARDS_IN_GAME = new Filter.Sql(
+            "SELECT card.* FROM card JOIN lobby_secret WHERE lobby_secret.Player = :sender"
+        );
+        */
 
     [Table(Name = "card", Public = true)]
     public partial class Card
@@ -52,5 +52,11 @@ public static partial class Module
                );
             }
         }
+    }
+
+    public static void UseAndUpdateCard(ReducerContext ctx, Card card)
+    {
+        card.isUsed = true;
+        ctx.Db.card.CardToken.Update(card);
     }
 }

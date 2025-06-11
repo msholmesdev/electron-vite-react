@@ -38,6 +38,8 @@ import { ClientDisconnected } from "./client_disconnected_reducer.ts";
 export { ClientDisconnected };
 import { CloseLobby } from "./close_lobby_reducer.ts";
 export { CloseLobby };
+import { EndTurn } from "./end_turn_reducer.ts";
+export { EndTurn };
 import { Farmer } from "./farmer_reducer.ts";
 export { Farmer };
 import { Gamer } from "./gamer_reducer.ts";
@@ -60,6 +62,8 @@ import { ReadyUpInLobby } from "./ready_up_in_lobby_reducer.ts";
 export { ReadyUpInLobby };
 import { RemoveSelfFromLobby } from "./remove_self_from_lobby_reducer.ts";
 export { RemoveSelfFromLobby };
+import { SelectTurnType } from "./select_turn_type_reducer.ts";
+export { SelectTurnType };
 import { ServerLog } from "./server_log_reducer.ts";
 export { ServerLog };
 import { StartGame } from "./start_game_reducer.ts";
@@ -68,6 +72,8 @@ import { StartLobby } from "./start_lobby_reducer.ts";
 export { StartLobby };
 import { TaxiDriver } from "./taxi_driver_reducer.ts";
 export { TaxiDriver };
+import { Thief } from "./thief_reducer.ts";
+export { Thief };
 
 // Import and reexport all table handle types
 import { CardTableHandle } from "./card_table.ts";
@@ -149,6 +155,10 @@ const REMOTE_MODULE = {
       reducerName: "CloseLobby",
       argsType: CloseLobby.getTypeScriptAlgebraicType(),
     },
+    EndTurn: {
+      reducerName: "EndTurn",
+      argsType: EndTurn.getTypeScriptAlgebraicType(),
+    },
     Farmer: {
       reducerName: "Farmer",
       argsType: Farmer.getTypeScriptAlgebraicType(),
@@ -193,6 +203,10 @@ const REMOTE_MODULE = {
       reducerName: "RemoveSelfFromLobby",
       argsType: RemoveSelfFromLobby.getTypeScriptAlgebraicType(),
     },
+    SelectTurnType: {
+      reducerName: "SelectTurnType",
+      argsType: SelectTurnType.getTypeScriptAlgebraicType(),
+    },
     ServerLog: {
       reducerName: "ServerLog",
       argsType: ServerLog.getTypeScriptAlgebraicType(),
@@ -208,6 +222,10 @@ const REMOTE_MODULE = {
     TaxiDriver: {
       reducerName: "TaxiDriver",
       argsType: TaxiDriver.getTypeScriptAlgebraicType(),
+    },
+    Thief: {
+      reducerName: "Thief",
+      argsType: Thief.getTypeScriptAlgebraicType(),
     },
   },
   // Constructors which are used by the DbConnectionImpl to
@@ -239,6 +257,7 @@ export type Reducer = never
 | { name: "ClientConnected", args: ClientConnected }
 | { name: "ClientDisconnected", args: ClientDisconnected }
 | { name: "CloseLobby", args: CloseLobby }
+| { name: "EndTurn", args: EndTurn }
 | { name: "Farmer", args: Farmer }
 | { name: "Gamer", args: Gamer }
 | { name: "GoldDigger", args: GoldDigger }
@@ -250,10 +269,12 @@ export type Reducer = never
 | { name: "Politician", args: Politician }
 | { name: "ReadyUpInLobby", args: ReadyUpInLobby }
 | { name: "RemoveSelfFromLobby", args: RemoveSelfFromLobby }
+| { name: "SelectTurnType", args: SelectTurnType }
 | { name: "ServerLog", args: ServerLog }
 | { name: "StartGame", args: StartGame }
 | { name: "StartLobby", args: StartLobby }
 | { name: "TaxiDriver", args: TaxiDriver }
+| { name: "Thief", args: Thief }
 ;
 
 export class RemoteReducers {
@@ -289,6 +310,22 @@ export class RemoteReducers {
 
   removeOnCloseLobby(callback: (ctx: ReducerEventContext, gameToken: bigint) => void) {
     this.connection.offReducer("CloseLobby", callback);
+  }
+
+  endTurn(lobbyToken: bigint) {
+    const __args = { lobbyToken };
+    let __writer = new BinaryWriter(1024);
+    EndTurn.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("EndTurn", __argsBuffer, this.setCallReducerFlags.endTurnFlags);
+  }
+
+  onEndTurn(callback: (ctx: ReducerEventContext, lobbyToken: bigint) => void) {
+    this.connection.onReducer("EndTurn", callback);
+  }
+
+  removeOnEndTurn(callback: (ctx: ReducerEventContext, lobbyToken: bigint) => void) {
+    this.connection.offReducer("EndTurn", callback);
   }
 
   farmer(cardToken: bigint, lobbyToken: bigint) {
@@ -435,19 +472,19 @@ export class RemoteReducers {
     this.connection.offReducer("Politician", callback);
   }
 
-  readyUpInLobby(gameToken: bigint) {
-    const __args = { gameToken };
+  readyUpInLobby(lobbyToken: bigint) {
+    const __args = { lobbyToken };
     let __writer = new BinaryWriter(1024);
     ReadyUpInLobby.getTypeScriptAlgebraicType().serialize(__writer, __args);
     let __argsBuffer = __writer.getBuffer();
     this.connection.callReducer("ReadyUpInLobby", __argsBuffer, this.setCallReducerFlags.readyUpInLobbyFlags);
   }
 
-  onReadyUpInLobby(callback: (ctx: ReducerEventContext, gameToken: bigint) => void) {
+  onReadyUpInLobby(callback: (ctx: ReducerEventContext, lobbyToken: bigint) => void) {
     this.connection.onReducer("ReadyUpInLobby", callback);
   }
 
-  removeOnReadyUpInLobby(callback: (ctx: ReducerEventContext, gameToken: bigint) => void) {
+  removeOnReadyUpInLobby(callback: (ctx: ReducerEventContext, lobbyToken: bigint) => void) {
     this.connection.offReducer("ReadyUpInLobby", callback);
   }
 
@@ -465,6 +502,22 @@ export class RemoteReducers {
 
   removeOnRemoveSelfFromLobby(callback: (ctx: ReducerEventContext, gameToken: bigint) => void) {
     this.connection.offReducer("RemoveSelfFromLobby", callback);
+  }
+
+  selectTurnType(lobbyToken: bigint, turnType: Turn) {
+    const __args = { lobbyToken, turnType };
+    let __writer = new BinaryWriter(1024);
+    SelectTurnType.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("SelectTurnType", __argsBuffer, this.setCallReducerFlags.selectTurnTypeFlags);
+  }
+
+  onSelectTurnType(callback: (ctx: ReducerEventContext, lobbyToken: bigint, turnType: Turn) => void) {
+    this.connection.onReducer("SelectTurnType", callback);
+  }
+
+  removeOnSelectTurnType(callback: (ctx: ReducerEventContext, lobbyToken: bigint, turnType: Turn) => void) {
+    this.connection.offReducer("SelectTurnType", callback);
   }
 
   serverLog(logMessage: string) {
@@ -531,12 +584,33 @@ export class RemoteReducers {
     this.connection.offReducer("TaxiDriver", callback);
   }
 
+  thief(playCardToken: bigint, lobbyToken: bigint, otherBossLobbyToken: bigint) {
+    const __args = { playCardToken, lobbyToken, otherBossLobbyToken };
+    let __writer = new BinaryWriter(1024);
+    Thief.getTypeScriptAlgebraicType().serialize(__writer, __args);
+    let __argsBuffer = __writer.getBuffer();
+    this.connection.callReducer("Thief", __argsBuffer, this.setCallReducerFlags.thiefFlags);
+  }
+
+  onThief(callback: (ctx: ReducerEventContext, playCardToken: bigint, lobbyToken: bigint, otherBossLobbyToken: bigint) => void) {
+    this.connection.onReducer("Thief", callback);
+  }
+
+  removeOnThief(callback: (ctx: ReducerEventContext, playCardToken: bigint, lobbyToken: bigint, otherBossLobbyToken: bigint) => void) {
+    this.connection.offReducer("Thief", callback);
+  }
+
 }
 
 export class SetReducerFlags {
   closeLobbyFlags: CallReducerFlags = 'FullUpdate';
   closeLobby(flags: CallReducerFlags) {
     this.closeLobbyFlags = flags;
+  }
+
+  endTurnFlags: CallReducerFlags = 'FullUpdate';
+  endTurn(flags: CallReducerFlags) {
+    this.endTurnFlags = flags;
   }
 
   farmerFlags: CallReducerFlags = 'FullUpdate';
@@ -594,6 +668,11 @@ export class SetReducerFlags {
     this.removeSelfFromLobbyFlags = flags;
   }
 
+  selectTurnTypeFlags: CallReducerFlags = 'FullUpdate';
+  selectTurnType(flags: CallReducerFlags) {
+    this.selectTurnTypeFlags = flags;
+  }
+
   serverLogFlags: CallReducerFlags = 'FullUpdate';
   serverLog(flags: CallReducerFlags) {
     this.serverLogFlags = flags;
@@ -612,6 +691,11 @@ export class SetReducerFlags {
   taxiDriverFlags: CallReducerFlags = 'FullUpdate';
   taxiDriver(flags: CallReducerFlags) {
     this.taxiDriverFlags = flags;
+  }
+
+  thiefFlags: CallReducerFlags = 'FullUpdate';
+  thief(flags: CallReducerFlags) {
+    this.thiefFlags = flags;
   }
 
 }

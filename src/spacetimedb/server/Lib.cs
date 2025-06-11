@@ -32,27 +32,24 @@ public static partial class Module
         Manage
     }
 
-    /// Takes a name and checks if it's acceptable as a user's name.
-    private static string ValidateName(string name)
-    {
-        if (string.IsNullOrEmpty(name))
-        {
-            throw new Exception("Names must not be empty");
-        }
-        return name;
-    }
 
     [Reducer(ReducerKind.ClientConnected)]
     public static void ClientConnected(ReducerContext ctx)
     {
-        Log.Info($"Connect {ctx.Sender}");
-        
+        //Log.Info($"Connect {ctx.Sender}");
+
     }
 
     [Reducer(ReducerKind.ClientDisconnected)]
     public static void ClientDisconnected(ReducerContext ctx)
     {
         // LobbyDisconnect(ctx, );
+    }
+    
+        [Reducer]
+    public static void ServerLog(ReducerContext ctx, string logMessage)
+    {
+         Log.Info($"logging message: {logMessage}");
     }
 
 }

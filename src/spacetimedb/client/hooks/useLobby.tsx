@@ -5,8 +5,13 @@ import { useLobbyFacade } from "../facades/useLobbyFacade";
 
 function useLobby() {
   const { conn } = useConnectionFacade();
-  const { addLobby, removeLobby, addLobbySecret, removeLobbySecret } =
-    useLobbyFacade();
+  const {
+    addLobby,
+    removeLobby,
+    addLobbySecret,
+    removeLobbySecret,
+    updateLobby,
+  } = useLobbyFacade();
 
   useEffect(() => {
     if (!conn) return;
@@ -40,11 +45,22 @@ function useLobby() {
     };
     conn.db.lobbySecret.onDelete(onDeleteLobbySecret);
 
+    const onUpdateLobby = (
+      _ctx: EventContext,
+      _oldLobby: Lobby,
+      newLobby: Lobby
+    ) => {
+      console.log("updated lobby: ", newLobby);
+      updateLobby(newLobby);
+    };
+    conn.db.lobby.onUpdate(onUpdateLobby);
+
     return () => {
       conn.db.lobby.removeOnInsert(onInsertLobby);
       conn.db.lobby.removeOnDelete(onDeleteLobby);
       conn.db.lobbySecret.removeOnInsert(onInsertLobbySecret);
       conn.db.lobbySecret.removeOnDelete(onDeleteLobbySecret);
+      conn.db.lobby.removeOnUpdate(onUpdateLobby);
     };
   }, [conn]);
 }

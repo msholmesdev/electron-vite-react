@@ -1,21 +1,25 @@
 import { Overlay } from "@/components/Overlay";
 import { useGameFacade } from "@/spacetimedb/client/facades/useGameFacade";
 import { useLobbyFacade } from "@/spacetimedb/client/facades/useLobbyFacade";
+import { Turn } from "@/spacetimedb/client/module_bindings";
 
 const ChooseTurnOption = () => {
   const { isTurn } = useGameFacade();
-  const { connectedLobby } = useLobbyFacade();
+  const { connectedLobby, setTurnTypeReducer } = useLobbyFacade();
 
   const Manage = () => {
     console.log("manage");
+    setTurnTypeReducer(Turn.Manage as Turn.Manage);
   };
 
   const Hire = () => {
     console.log("hire");
+    setTurnTypeReducer(Turn.Hire as Turn.Hire);
   };
 
   const Interview = () => {
     console.log("interview");
+    setTurnTypeReducer(Turn.Interview as Turn.Interview);
   };
 
   return (

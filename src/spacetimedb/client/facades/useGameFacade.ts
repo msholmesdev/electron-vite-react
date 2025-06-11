@@ -69,6 +69,20 @@ export const useGameFacade = () => {
     conn.reducers.startLobby(lobbyName, playerCount, isPrivate);
   };
 
+  const startGame = () => {
+    if (!conn) {
+      console.warn("no connection");
+      return;
+    }
+
+    if (!connectedGame) {
+      console.warn("no game");
+      return;
+    }
+
+    conn.reducers.startGame(connectedGame.gameToken);
+  };
+
   return {
     games,
     addGame,
@@ -78,6 +92,7 @@ export const useGameFacade = () => {
     removeGame,
     updateGame,
     removeGameSecret,
+    startGame,
     isTurn,
     connectedGame,
     isHost,

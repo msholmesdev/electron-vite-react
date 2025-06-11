@@ -31,8 +31,8 @@ import {
   deepEqual,
 } from "@clockworklabs/spacetimedb-sdk";
 import { Lobby } from "./lobby_type";
-import { Guilds as __Guilds } from "./guilds_type";
 import { Turn as __Turn } from "./turn_type";
+import { Guilds as __Guilds } from "./guilds_type";
 
 import { EventContext, Reducer, RemoteReducers, RemoteTables } from ".";
 

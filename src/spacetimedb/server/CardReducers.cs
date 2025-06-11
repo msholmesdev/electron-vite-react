@@ -15,7 +15,7 @@ public static partial class Module
         }
 
         AddCardsFromUnemployedToResume(ctx, lobbyToken, 2);
-        validCard.isUsed = true;
+        UseAndUpdateCard(ctx, validCard);
     }
 
     [Reducer]
@@ -40,7 +40,7 @@ public static partial class Module
 
         anotherCard.LobbyToken = lobbyToken;
         anotherCard.Location = Locations.Resume;
-        validCard.isUsed = true;
+        UseAndUpdateCard(ctx, validCard);
     }
 
     [Reducer]
@@ -80,9 +80,10 @@ public static partial class Module
         {
             card.LobbyToken = lobbyToken;
         }
-        validCard.isUsed = true;
+        UseAndUpdateCard(ctx, validCard);
     }
 
+    [Reducer]
     public static void Thief(ReducerContext ctx, ulong playCardToken, ulong lobbyToken, ulong otherBossLobbyToken)
     {
         var isPlayerTurn = ValidateIsTurn(ctx, lobbyToken);
@@ -108,7 +109,7 @@ public static partial class Module
         var selectedCard = otherBossCardsInResume.First();
         selectedCard.LobbyToken = lobbyToken;
         selectedCard.Location = Locations.Company;
-        validCard.isUsed = true;
+        UseAndUpdateCard(ctx, validCard);
     }
 
     [Reducer]
@@ -132,7 +133,7 @@ public static partial class Module
         }
 
         cardToReactivate.isUsed = false;
-        validCard.isUsed = true;
+        UseAndUpdateCard(ctx, validCard);
     }
 
     [Reducer]
@@ -148,7 +149,7 @@ public static partial class Module
         }
 
         AddCardsFromUnemployedToCompany(ctx, lobbyToken, 1);
-        validCard.isUsed = true;
+        UseAndUpdateCard(ctx, validCard);
     }
 
     [Reducer]
@@ -165,7 +166,7 @@ public static partial class Module
 
         AddCardFromResumeToCompany(ctx, cardTokenFromResumeToCompany1);
         AddCardFromResumeToCompany(ctx, cardTokenFromResumeToCompany2);
-        validCard.isUsed = true;
+        UseAndUpdateCard(ctx, validCard);
     }
 
     [Reducer]
@@ -185,7 +186,7 @@ public static partial class Module
             return;
         }
 
-        validCard.isUsed = true;
+        UseAndUpdateCard(ctx, validCard);
     }
 
     [Reducer]
@@ -205,7 +206,7 @@ public static partial class Module
             return;
         }
 
-        validCard.isUsed = true;
+        UseAndUpdateCard(ctx, validCard);
     }
 
     [Reducer]
@@ -224,7 +225,6 @@ public static partial class Module
         {
             return;
         }
-        
-        validCard.isUsed = true;
+        UseAndUpdateCard(ctx, validCard);
     }
 }

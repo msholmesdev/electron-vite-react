@@ -8,15 +8,18 @@ type LobbyState = {
   addLobbySecret: (lobbySecret: LobbySecret) => void;
   removeLobbySecret: (lobbySecret: LobbySecret) => void;
   removeLobby: (lobby: Lobby) => void;
+  updateLobby: (updatedLobby: Lobby) => void;
 };
 
 export const useLobbyStore = create<LobbyState>((set) => ({
   lobbies: [],
   lobbiesSecret: [],
-  addLobby: (lobby) =>
-    set((state) => ({
+  addLobby: (lobby) => {
+    console.log("adding lobby");
+    return set((state) => ({
       lobbies: [...state.lobbies, lobby],
-    })),
+    }));
+  },
   removeLobby: (lobby) =>
     set((state) => ({
       lobbies: state.lobbies.filter(
@@ -31,6 +34,12 @@ export const useLobbyStore = create<LobbyState>((set) => ({
     set((state) => ({
       lobbiesSecret: state.lobbiesSecret.filter(
         (lob) => lob.lobbyToken !== lobbySecret.lobbyToken
+      ),
+    })),
+  updateLobby: (updatedLobby) =>
+    set((state) => ({
+      lobbies: state.lobbies.map((lobby) =>
+        lobby.lobbyToken === updatedLobby.lobbyToken ? updatedLobby : lobby
       ),
     })),
 }));

@@ -8,13 +8,18 @@ import { useNavigate } from "react-router-dom";
 
 function Lobby() {
   const navigate = useNavigate();
-  const { leaveLobbyReducer, lobbies, connectedLobby, closeLobbyReducer } =
-    useLobbyFacade();
+  const {
+    leaveLobbyReducer,
+    lobbies,
+    connectedLobby,
+    closeLobbyReducer,
+    readyUp,
+  } = useLobbyFacade();
   const connectedLobbies = lobbies.filter(
     (lob) =>
       lob.isConnected == true && connectedLobby?.gameToken == lob.gameToken
   );
-  const { isHost, connectedGame } = useGameFacade();
+  const { isHost, connectedGame, startGame } = useGameFacade();
 
   const close = () => {
     if (connectedLobby) {
@@ -32,6 +37,7 @@ function Lobby() {
 
   useEffect(() => {
     if (connectedLobby) {
+      console.log(connectedLobby);
       return;
     }
     navigate("/menu");
@@ -53,13 +59,18 @@ function Lobby() {
       </div>
       {isHost ? (
         <div className="flex flex-row gap-4">
-          <Button onClick={() => console.log("handle start game")}>
-            Start
-          </Button>
+          <Button onClick={startGame}>Start</Button>
           <Button onClick={close}>Close Lobby</Button>
         </div>
       ) : (
-        <Button onClick={leave}>Leave</Button>
+        <div className="flex flex-row gap-4">
+          {connectedLobby?.isReady ? (
+            "Ready"
+          ) : (
+            <Button onClick={readyUp}>Ready up</Button>
+          )}
+          <Button onClick={leave}>Leave</Button>
+        </div>
       )}
     </MenuCard>
   );

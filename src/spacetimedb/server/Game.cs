@@ -67,17 +67,17 @@ public static partial class Module
     [Reducer]
     public static void StartGame(ReducerContext ctx, ulong gameToken)
     {
-        ReadyUpInLobby(ctx, gameToken);
-
         var game = ctx.Db.game.GameToken.Find(gameToken);
         if (game is null)
         {
+            ServerLog(ctx, "game does not exist");
             return;
         }
 
         var playersInLobby = ctx.Db.lobby.GameToken.Filter(gameToken).ToList();
         if (playersInLobby is null || playersInLobby.Count <= 1)
         {
+            ServerLog(ctx, "not enough players");
             return;
         }
 
@@ -85,6 +85,7 @@ public static partial class Module
         {
             if (player.IsReady == false)
             {
+                ServerLog(ctx, "player not ready");
                 return;
             }
         }
@@ -100,26 +101,85 @@ public static partial class Module
             var player = shuffledPlayers[i];
             player.Representative = availableGuilds[i];
             player.TurnPosition = (byte)i;
+            ctx.Db.lobby.LobbyToken.Update(player);
         }
 
         game.CurrentTurnPosition = (byte)random.Next(shuffledPlayers.Count);
         game.HasStarted = true;
+        ctx.Db.game.GameToken.Update(game);
+        ServerLog(ctx, "game updated");
         InitializeCards(ctx, gameToken);
     }
 
     [Reducer]
-    public static void ReadyUpInLobby(ReducerContext ctx, ulong gameToken)
+    public static void SelectTurnType(ReducerContext ctx, ulong lobbyToken, Turn turnType)
     {
-        var playerSecretLobbies = ctx.Db.lobby_secret.GameToken
-                                    .Filter(gameToken).Where(Lobby => Lobby.Player == ctx.Sender);
-        var playerSecretLobby = playerSecretLobbies.First();
-        if (playerSecretLobby is not null)
+        var isTurn = ValidateIsTurn(ctx, lobbyToken);
+        if (!isTurn)
         {
-            var playerLobby = ctx.Db.lobby.LobbyToken.Find(playerSecretLobby.LobbyToken);
-            if (playerLobby is not null)
-            {
-                playerLobby.IsReady = true;
-            }
+            return;
+        }
+        var lob = ctx.Db.lobby.LobbyToken.Find(lobbyToken);
+        if (lob is null)
+        {
+            return;
+        }
+
+        lob.TurnType = turnType;
+        ctx.Db.lobby.LobbyToken.Update(lob);
+
+        if (turnType == Turn.Hire)
+        {
+            AddCardsFromUnemployedToResume(ctx, lobbyToken, 3);
+            EndTurn(ctx, lobbyToken);
+            return;
+        }  
+    }
+
+    [Reducer]
+    public static void EndTurn(ReducerContext ctx, ulong lobbyToken)
+    {
+        var isTurn = ValidateIsTurn(ctx, lobbyToken);
+        if (!isTurn)
+        {
+            return;
+        }
+        var lob = ctx.Db.lobby.LobbyToken.Find(lobbyToken);
+
+        if (lob is null)
+        {
+            return;
+        }
+
+        var playerCount = (byte)ctx.Db.lobby.GameToken.Filter(lob.GameToken).ToList().Count;
+
+        var game = ctx.Db.game.GameToken.Find(lob.GameToken);
+
+        if (game is null)
+        {
+            return;
+        }
+
+        lob.TurnType = null;
+        game.CurrentTurnPosition = (byte?)(game.CurrentTurnPosition + 1 == playerCount ? 0 : game.CurrentTurnPosition + 1);
+        ctx.Db.lobby.LobbyToken.Update(lob);
+        ctx.Db.game.GameToken.Update(game);
+     }
+
+    [Reducer]
+    public static void ReadyUpInLobby(ReducerContext ctx, ulong lobbyToken)
+    {
+
+        var playerSecretLobby = ctx.Db.lobby_secret.LobbyToken.Find(lobbyToken) ?? throw new InvalidOperationException("The player secret does not exist.");
+        if (playerSecretLobby.Player != ctx.Sender)
+        {
+            throw new InvalidOperationException("Sender is not lobby token owner.");
+        }
+        var playerLobby = ctx.Db.lobby.LobbyToken.Find(lobbyToken) ?? throw new InvalidOperationException("The player does not exist.");
+        if (playerLobby is not null)
+        {
+            playerLobby.IsReady = true;
+            ctx.Db.lobby.LobbyToken.Update(playerLobby);
         }
     }
 
@@ -157,6 +217,7 @@ public static partial class Module
                 if (lobby is not null)
                 {
                     lobby.IsConnected = false;
+                    ctx.Db.lobby.LobbyToken.Update(lobby);
                 }
             }
         }
@@ -241,8 +302,6 @@ public static partial class Module
     [Reducer]
     public static void StartLobby(ReducerContext ctx, string name, byte maxPlayers, bool? isPrivate)
     {
-        Console.WriteLine("Starting lobby");
-        name = ValidateName(name);
         bool playerCountValid = maxPlayers > 1 && maxPlayers < 7;
 
         if (playerCountValid && name is not null)
@@ -266,12 +325,7 @@ public static partial class Module
             );
 
             JoinLobby(ctx, row.GameToken);
+            ReadyUpInLobby(ctx, row.GameToken);
         }
-    }
-
-    [Reducer]
-    public static void ServerLog(ReducerContext ctx, string logMessage)
-    {
-         Log.Info($"logging message: {logMessage}");
     }
 }

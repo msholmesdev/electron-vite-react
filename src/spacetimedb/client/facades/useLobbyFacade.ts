@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Lobby } from "../module_bindings";
+import { Lobby, Turn } from "../module_bindings";
 import { useLobbyStore } from "./stores/useLobbyStore";
 import { useConnectionFacade } from "./useConnectionFacade";
 
@@ -10,9 +10,9 @@ export function useLobbyFacade() {
   const removeLobby = useLobbyStore((state) => state.removeLobby);
   const addLobbySecret = useLobbyStore((state) => state.addLobbySecret);
   const removeLobbySecret = useLobbyStore((state) => state.removeLobbySecret);
+  const updateLobby = useLobbyStore((state) => state.updateLobby);
   const { conn } = useConnectionFacade();
   const connectedLobby = useMemo(() => {
-    console.log("conneted lobby getting updated");
     let playerLobbies: Lobby[] = [];
 
     lobbiesSecret.forEach((lobSecret) => {
@@ -34,7 +34,6 @@ export function useLobbyFacade() {
     }
 
     if (activeLobs.length === 0) {
-      console.log("no connected lobby");
       return null;
     }
 
@@ -57,12 +56,40 @@ export function useLobbyFacade() {
     conn.reducers.joinLobby(gameToken);
   };
 
+  const readyUp = () => {
+    if (!conn) {
+      console.warn("Connection not available.");
+      return;
+    }
+
+    if (!connectedLobby) {
+      console.warn("Not in a lobby.");
+      return;
+    }
+
+    console.log("reading up with ", connectedLobby);
+    conn.reducers.readyUpInLobby(connectedLobby.lobbyToken);
+  };
+
   const closeLobbyReducer = (gameToken: bigint) => {
     if (!conn) {
       console.warn("Connection not available.");
       return;
     }
     conn.reducers.closeLobby(gameToken);
+  };
+
+  const setTurnTypeReducer = (turnType: Turn) => {
+    if (!conn) {
+      console.warn("Connection not available.");
+      return;
+    }
+    if (!connectedLobby) {
+      console.warn("No connected lobby.");
+      return;
+    }
+
+    conn.reducers.selectTurnType(connectedLobby.lobbyToken, turnType);
   };
 
   return {
@@ -72,9 +99,12 @@ export function useLobbyFacade() {
     removeLobby,
     leaveLobbyReducer,
     joinLobbyReducer,
+    readyUp,
     closeLobbyReducer,
     addLobbySecret,
     removeLobbySecret,
+    updateLobby,
+    setTurnTypeReducer,
     connectedLobby,
   };
 }
