@@ -16,9 +16,9 @@ const Politician = ({ location }: { location: Card_Loc }) => {
 
   return (
     <Card
-      name="farmer"
+      name="politician"
       text="Draw one card and immediately hire them"
-      img={"farmer"}
+      img={"politician"}
       count={count}
       location={location}
       companyCallback={onFarmerCallback}

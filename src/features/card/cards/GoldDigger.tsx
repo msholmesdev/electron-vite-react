@@ -16,9 +16,9 @@ const GoldDigger = ({ location }: { location: Card_Loc }) => {
 
   return (
     <Card
-      name="farmer"
+      name="gold digger"
       text="Draw one card and immediately hire them"
-      img={"farmer"}
+      img={"gold_digger"}
       count={count}
       location={location}
       companyCallback={onFarmerCallback}

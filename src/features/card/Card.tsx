@@ -15,8 +15,8 @@ const Card = ({
   location: Card_Loc;
   companyCallback: () => void;
 }) => {
-  if (count === 0) {
-    return <div className="w-50 h-40 bg-red-300"></div>;
+  if (count !== 0) {
+    return <div className="w-20 h-40 bg-red-300"></div>;
   }
 
   const toggleSelected = () => {};
@@ -25,8 +25,8 @@ const Card = ({
 
   return (
     <button onClick={callback} className="flex flex-col gap-4">
-      <img src={"images/farmer.png"} alt={name} style={{ width: "200px" }} />
-      <div>{text}</div>
+      <img src={`images/${img}.png`} alt={name} />
+      {false && <div>{text}</div>}
     </button>
   );
 };

@@ -13,9 +13,11 @@ const Game = () => {
   }, [cards]);
 
   return (
-    <div>
-      <Deck />
-      <Hand />
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-row gap-6">
+        <Deck />
+        <Hand />
+      </div>
       <ChooseTurnOption />
     </div>
   );

@@ -12,7 +12,7 @@ import { Thief } from "./cards/Thief";
 
 const CardGrid = ({ location }: { location: Card_Loc }) => {
   return (
-    <div className="grid grid-cols-4 gap-5">
+    <div className="w-{40%] grid grid-cols-5 gap-5">
       <Farmer location={location} />
       <Gamer location={location} />
       <GoldDigger location={location} />
