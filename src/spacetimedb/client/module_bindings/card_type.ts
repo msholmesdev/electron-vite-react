@@ -37,7 +37,7 @@ export type Card = {
   cardToken: bigint,
   lobbyToken: bigint | undefined,
   gameToken: bigint,
-  employee: __Guilds,
+  representative: __Guilds,
   location: __Locations,
   isUsed: boolean,
 };
@@ -55,7 +55,7 @@ export namespace Card {
       new ProductTypeElement("cardToken", AlgebraicType.createU64Type()),
       new ProductTypeElement("lobbyToken", AlgebraicType.createOptionType(AlgebraicType.createU64Type())),
       new ProductTypeElement("gameToken", AlgebraicType.createU64Type()),
-      new ProductTypeElement("employee", __Guilds.getTypeScriptAlgebraicType()),
+      new ProductTypeElement("representative", __Guilds.getTypeScriptAlgebraicType()),
       new ProductTypeElement("location", __Locations.getTypeScriptAlgebraicType()),
       new ProductTypeElement("isUsed", AlgebraicType.createBoolType()),
     ]);

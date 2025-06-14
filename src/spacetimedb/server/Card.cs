@@ -3,13 +3,13 @@ using SpacetimeDB;
 #pragma warning disable STDB_UNSTABLE
 public static partial class Module
 {
-
+    /*
     [ClientVisibilityFilter]
     public static readonly Filter CARD_FILTER = new Filter.Sql(
-        "SELECT * FROM card WHERE Location != Unemployed"
+        "SELECT * FROM card WHERE Location != 0"
     );
 
-    /*
+
         [ClientVisibilityFilter]
         public static readonly Filter CARDS_IN_GAME = new Filter.Sql(
             "SELECT card.* FROM card JOIN lobby_secret WHERE lobby_secret.Player = :sender"
@@ -25,7 +25,7 @@ public static partial class Module
         public ulong? LobbyToken;
         [SpacetimeDB.Index.BTree]
         public ulong GameToken;
-        public Guilds Employee;
+        public Guilds Representative;
         public Locations Location;
         public bool isUsed;
     }
@@ -41,7 +41,7 @@ public static partial class Module
                    new Card
                    {
                        GameToken = gameToken,
-                       Employee = guild,
+                       Representative = guild,
                        Location = Locations.Unemployed,
                        isUsed = true,
                    }
