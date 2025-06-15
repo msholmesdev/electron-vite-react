@@ -16,7 +16,7 @@ const Taxi = ({ location }: { location: Card_Loc }) => {
   return (
     <Card
       name="taxi"
-      text="Draw one card and immediately hire them"
+      text="Transfer lowest representative from one guild to another non-empty guild"
       img={"taxi"}
       count={count}
       location={location}

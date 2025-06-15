@@ -16,7 +16,7 @@ const Intern = ({ location }: { location: Card_Loc }) => {
   return (
     <Card
       name="intern"
-      text="Draw one card and immediately hire them"
+      text="work an employee in your company that already worked"
       img={"intern"}
       count={count}
       location={location}

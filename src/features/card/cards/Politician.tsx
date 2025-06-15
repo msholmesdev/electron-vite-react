@@ -17,7 +17,7 @@ const Politician = ({ location }: { location: Card_Loc }) => {
   return (
     <Card
       name="politician"
-      text="Draw one card and immediately hire them"
+      text="trade 1 employee from your resume for 2 employees from another boss' resume"
       img={"politician"}
       count={count}
       location={location}

@@ -16,7 +16,7 @@ const Lawyer = ({ location }: { location: Card_Loc }) => {
   return (
     <Card
       name="lawyer"
-      text="Draw one card and immediately hire them"
+      text="Employ 2 employees from your resume"
       img={"lawyer"}
       count={count}
       location={location}

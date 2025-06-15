@@ -17,7 +17,7 @@ const GoldDigger = ({ location }: { location: Card_Loc }) => {
   return (
     <Card
       name="gold digger"
-      text="Draw one card and immediately hire them"
+      text="Draw 2 cards from unemployed to your resume"
       img={"gold_digger"}
       count={count}
       location={location}

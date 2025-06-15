@@ -16,7 +16,7 @@ const Pirate = ({ location }: { location: Card_Loc }) => {
   return (
     <Card
       name="pirate"
-      text="Draw one card and immediately hire them"
+      text="steal 1 employee from another company into your resume"
       img={"pirate"}
       count={count}
       location={location}
