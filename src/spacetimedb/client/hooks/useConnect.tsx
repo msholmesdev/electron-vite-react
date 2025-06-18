@@ -37,6 +37,7 @@ function useConnect() {
         "SELECT * FROM game",
         "SELECT * FROM game_secret",
         "SELECT * FROM card",
+        "SELECT * FROM guild",
       ]);
     };
 

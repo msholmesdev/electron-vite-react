@@ -11,6 +11,7 @@ import { useLobby } from "./spacetimedb/client/hooks/useLobby";
 import { Lobby } from "./features/lobby/Lobby";
 import { Game } from "./features/game/Game";
 import { useCard } from "./spacetimedb/client/hooks/useCard";
+import { useGuild } from "./spacetimedb/client/hooks/useGuild";
 
 function App() {
   const { conn, connected, identity } = useConnect();
@@ -18,6 +19,7 @@ function App() {
   useGame();
   useLobby();
   useCard();
+  useGuild();
 
   useEffect(() => {
     setConnection(conn);

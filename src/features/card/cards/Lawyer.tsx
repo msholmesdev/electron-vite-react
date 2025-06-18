@@ -4,9 +4,10 @@ import { Guilds } from "@/spacetimedb/client/module_bindings";
 import { Card_Loc } from "@/type/types";
 
 const Lawyer = ({ location }: { location: Card_Loc }) => {
-  const { getUnusedCardCountByTypeInCompany, lawyerReducer } = useCardFacade();
-  const count = getUnusedCardCountByTypeInCompany(
-    Guilds.Lawyer as Guilds.Lawyer
+  const { getCardCountByTypeInLocation, lawyerReducer } = useCardFacade();
+  const { usedCardCount, unUsedCardCount } = getCardCountByTypeInLocation(
+    Guilds.Lawyer as Guilds.Lawyer,
+    location
   );
 
   const onFarmerCallback = () => {
@@ -18,7 +19,8 @@ const Lawyer = ({ location }: { location: Card_Loc }) => {
       name="lawyer"
       text="Employ 2 employees from your resume"
       img={"lawyer"}
-      count={count}
+      usedCardCount={usedCardCount}
+      unUsedCardCount={unUsedCardCount}
       location={location}
       companyCallback={onFarmerCallback}
     />

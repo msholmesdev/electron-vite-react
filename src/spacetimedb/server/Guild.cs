@@ -22,9 +22,36 @@ public static partial class Module
 
         return null;
     }
-    
-        public static void UpdateGuild(ReducerContext ctx, Guild guild)
+
+    public static void UpdateGuild(ReducerContext ctx, Guild guild)
     {
         ctx.Db.guild.GuildToken.Update(guild);
+    }
+    
+        public static void InitializeRepresentatives(ReducerContext ctx, ulong gameToken)
+    {
+        byte index = 0;
+        foreach (var guild in Enum.GetValues<Guilds>())
+        {
+            index++;
+            ctx.Db.guild.Insert(
+               new Guild
+               {
+                   GameToken = gameToken,
+                   Representative = guild,
+                   X = index,
+                   Y = 9,
+               }
+           );
+            ctx.Db.guild.Insert(
+               new Guild
+               {
+                   GameToken = gameToken,
+                   Representative = guild,
+                   X = index,
+                   Y = 10,
+               }
+           );
+        }
     }
 }

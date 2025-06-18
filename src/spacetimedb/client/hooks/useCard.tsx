@@ -11,7 +11,6 @@ function useCard() {
     if (!conn) return;
 
     const onInsertCard = (_ctx: EventContext, card: Card) => {
-      console.log("adding a new card:", card);
       addCard(card);
     };
 

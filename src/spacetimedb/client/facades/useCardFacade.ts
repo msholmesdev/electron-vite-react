@@ -1,3 +1,4 @@
+import { Card_Loc } from "@/type/types";
 import { Guilds, Locations } from "../module_bindings";
 import { useCardStore } from "./stores/useCardStore";
 import { useConnectionFacade } from "./useConnectionFacade";
@@ -33,14 +34,60 @@ export const useCardFacade = () => {
     return false;
   };
 
-  const getUnusedCardCountByTypeInCompany = (cardType: Guilds) => {
-    return getUnusedCardsByTypeInCompany(cardType).length;
+  const getCardCountByTypeInLocation = (
+    cardType: Guilds,
+    location: Card_Loc
+  ) => {
+    const used =
+      location === "company"
+        ? getUsedCardsByTypeInCompany(cardType)
+        : getUsedCardsByTypeInResume(cardType);
+    const unUsed =
+      location === "company"
+        ? getUnusedCardsByTypeInCompany(cardType)
+        : getUnusedCardsByTypeInResume(cardType);
+    return { usedCardCount: used.length, unUsedCardCount: unUsed.length };
+  };
+
+  const getUnusedCardsByTypeInResume = (cardType: Guilds) => {
+    return getUnusedCardsByTypeAndLocation(
+      cardType,
+      Locations.Resume as Locations.Resume
+    );
+  };
+
+  const getUsedCardsByTypeInResume = (cardType: Guilds) => {
+    return getUsedCardsByTypeAndLocation(
+      cardType,
+      Locations.Resume as Locations.Resume
+    );
   };
 
   const getUnusedCardsByTypeInCompany = (cardType: Guilds) => {
     return getUnusedCardsByTypeAndLocation(
       cardType,
       Locations.Company as Locations.Company
+    );
+  };
+
+  const getUsedCardsByTypeInCompany = (cardType: Guilds) => {
+    return getUsedCardsByTypeAndLocation(
+      cardType,
+      Locations.Company as Locations.Company
+    );
+  };
+
+  const getUsedCardsByTypeAndLocation = (
+    cardType: Guilds,
+    cardLocation: Locations
+  ) => {
+    if (!connectedLobby) {
+      return [];
+    }
+    return getUsedCardsByTypeLocationLobbyId(
+      cardType,
+      cardLocation,
+      connectedLobby.lobbyToken
     );
   };
 
@@ -63,13 +110,41 @@ export const useCardFacade = () => {
     cardLocation: Locations,
     lobbyToken: bigint
   ) => {
-    return cards.filter(
-      (card) =>
-        card.lobbyToken === lobbyToken &&
-        card.isUsed === false &&
-        card.location === cardLocation &&
-        card.representative === cardType
+    return getCardsByisUsedTypeLocationLobbyId(
+      cardType,
+      cardLocation,
+      lobbyToken,
+      false
     );
+  };
+
+  const getUsedCardsByTypeLocationLobbyId = (
+    cardType: Guilds,
+    cardLocation: Locations,
+    lobbyToken: bigint
+  ) => {
+    return getCardsByisUsedTypeLocationLobbyId(
+      cardType,
+      cardLocation,
+      lobbyToken,
+      true
+    );
+  };
+
+  const getCardsByisUsedTypeLocationLobbyId = (
+    cardType: Guilds,
+    cardLocation: Locations,
+    lobbyToken: bigint,
+    isUsed: boolean
+  ) => {
+    return cards.filter((card) => {
+      return (
+        card.lobbyToken === lobbyToken &&
+        card.isUsed === isUsed &&
+        card.location.tag === cardLocation.tag &&
+        card.representative.tag === cardType.tag
+      );
+    });
   };
 
   const goldDiggerReducer = () => {
@@ -319,7 +394,7 @@ export const useCardFacade = () => {
     removeCard,
     updateCard,
     clearCards,
-    getUnusedCardCountByTypeInCompany,
+    getCardCountByTypeInLocation,
     farmerReducer,
     goldDiggerReducer,
     pirateReducer,

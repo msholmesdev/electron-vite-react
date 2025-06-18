@@ -6,14 +6,22 @@ import { Hand } from "../card/Hand";
 import { Container } from "@/components/Container";
 import { CardDescription } from "../card/CardDescription";
 import { GuildTable } from "../guild/GuildTable";
+import { useGuildFacade } from "@/spacetimedb/client/facades/useGuildFacade";
 
 const Game = () => {
   const { cards } = useCardFacade();
+  const { guilds } = useGuildFacade();
   useEffect(() => {
     if (cards.length > 0) {
       console.log("cards", cards);
     }
   }, [cards]);
+
+  useEffect(() => {
+    if (guilds.length > 0) {
+      console.log("guilds", guilds);
+    }
+  }, [guilds]);
 
   return (
     <Container className="p-10">

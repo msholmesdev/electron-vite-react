@@ -4,10 +4,10 @@ import { Guilds } from "@/spacetimedb/client/module_bindings";
 import { Card_Loc } from "@/type/types";
 
 const GoldDigger = ({ location }: { location: Card_Loc }) => {
-  const { getUnusedCardCountByTypeInCompany, goldDiggerReducer } =
-    useCardFacade();
-  const count = getUnusedCardCountByTypeInCompany(
-    Guilds.GoldDigger as Guilds.GoldDigger
+  const { getCardCountByTypeInLocation, goldDiggerReducer } = useCardFacade();
+  const { usedCardCount, unUsedCardCount } = getCardCountByTypeInLocation(
+    Guilds.GoldDigger as Guilds.GoldDigger,
+    location
   );
 
   const onFarmerCallback = () => {
@@ -19,7 +19,8 @@ const GoldDigger = ({ location }: { location: Card_Loc }) => {
       name="gold digger"
       text="Draw 2 cards from unemployed to your resume"
       img={"gold_digger"}
-      count={count}
+      usedCardCount={usedCardCount}
+      unUsedCardCount={unUsedCardCount}
       location={location}
       companyCallback={onFarmerCallback}
     />

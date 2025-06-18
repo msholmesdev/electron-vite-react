@@ -4,9 +4,10 @@ import { Guilds } from "@/spacetimedb/client/module_bindings";
 import { Card_Loc } from "@/type/types";
 
 const Taxi = ({ location }: { location: Card_Loc }) => {
-  const { getUnusedCardCountByTypeInCompany, taxiReducer } = useCardFacade();
-  const count = getUnusedCardCountByTypeInCompany(
-    Guilds.TaxiDriver as Guilds.TaxiDriver
+  const { getCardCountByTypeInLocation, taxiReducer } = useCardFacade();
+  const { usedCardCount, unUsedCardCount } = getCardCountByTypeInLocation(
+    Guilds.TaxiDriver as Guilds.TaxiDriver,
+    location
   );
 
   const onFarmerCallback = () => {
@@ -18,7 +19,8 @@ const Taxi = ({ location }: { location: Card_Loc }) => {
       name="taxi"
       text="Transfer lowest representative from one guild to another non-empty guild"
       img={"taxi"}
-      count={count}
+      usedCardCount={usedCardCount}
+      unUsedCardCount={unUsedCardCount}
       location={location}
       companyCallback={onFarmerCallback}
     />

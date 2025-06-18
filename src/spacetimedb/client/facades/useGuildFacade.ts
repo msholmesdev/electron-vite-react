@@ -2,14 +2,14 @@ import { useGuildStore } from "./stores/useGuildStore";
 
 const useGuildFacade = () => {
   const guilds = useGuildStore((state) => state.guilds);
-  const setGuilds = useGuildStore((state) => state.setGuilds);
+  const addGuild = useGuildStore((state) => state.addGuild);
   const updateGuild = useGuildStore((state) => state.updateGuild);
 
   const COLUMNS = 10;
   const ROWS = 10;
 
   const getSortedGuildsInColumn = (y: number) => {
-    return guilds.filter((guild) => guild.y === y).sort((a, b) => a.y - b.y);
+    return guilds.filter((guild) => guild.x === y).sort((a, b) => a.y - b.y);
   };
 
   const isValidColumn = (y: number) => {
@@ -18,7 +18,7 @@ const useGuildFacade = () => {
 
   return {
     guilds,
-    setGuilds,
+    addGuild,
     updateGuild,
     getSortedGuildsInColumn,
     isValidColumn,

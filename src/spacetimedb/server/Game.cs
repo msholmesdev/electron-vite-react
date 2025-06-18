@@ -108,6 +108,7 @@ public static partial class Module
         game.HasStarted = true;
         ctx.Db.game.GameToken.Update(game);
         ServerLog(ctx, "game updated");
+        InitializeRepresentatives(ctx, gameToken);
         InitializeCards(ctx, gameToken);
     }
 

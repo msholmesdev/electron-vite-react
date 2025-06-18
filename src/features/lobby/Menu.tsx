@@ -8,7 +8,7 @@ function Menu() {
   return (
     <div>
       {!connected && false && <InitialLoading />}
-      <div className="flex flex-col items-center justify-center gap-20 bg-gray-800 w-full h-full">
+      <div className="flex flex-col items-center justify-center gap-20 w-full h-full bg--pirate">
         <PageLink link="/host" name="Host a game" />
         <PageLink link="/lobbies" name="Join a game" />
       </div>
